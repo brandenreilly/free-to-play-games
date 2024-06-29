@@ -2,23 +2,60 @@ const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
 			message: null,
-			demo: [
-				{
-					title: "FIRST",
-					background: "white",
-					initial: "white"
-				},
-				{
-					title: "SECOND",
-					background: "white",
-					initial: "white"
-				}
-			]
+			user: null,
 		},
 		actions: {
 			// Use getActions to call a function within a fuction
 			exampleFunction: () => {
 				getActions().changeColor(0, "green");
+			},
+			handleGetUserFromToken: () => {
+				let token = sessionStorage.getItem('token')
+				const opts = {
+					method: 'GET',
+					headers: {
+						"Authorization": `Bearer ${token}`
+					}
+				}
+				if(token){
+					fetch(process.env.BACKEND_URL + 'api/token', opts)
+					.then(resp => {
+						if(resp.ok){
+							return resp.json()
+						}
+						else{
+							return alert("Invalid token. Please log in again.")
+						}
+					})
+					.then(data => setStore({user: data}))
+				}
+				else{}
+				},
+				handleLogIn: (usernameInput, passwordInput) => {
+					const opts = {
+						method: 'POST',
+					headers: {
+						"Content-Type": "application/json"
+					},
+					body: JSON.stringify({
+						username: usernameInput,
+						password: passwordInput
+					})
+				}
+
+				fetch(process.env.BACKEND_URL + 'api/login', opts)
+				.then(resp => {
+					if(resp.ok){
+						return resp.json()
+					}
+					else {
+						alert("Incorrect Username or Password.")
+					}
+				})
+				.then(data => {
+					setStore({user: data})
+					sessionStorage.setItem("token", data.access_token)
+				})
 			},
 
 			getMessage: async () => {
