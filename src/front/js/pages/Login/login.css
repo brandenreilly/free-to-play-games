@@ -1,0 +1,25 @@
+/* 
+        CSS Strictly For Login Page
+*/
+
+.loginFormContainer {
+    background: #2A3840;
+    border-radius: 20%;
+    margin-top: 75px;
+}
+
+.loginInput {
+    border: none;
+    background: none;
+    border-bottom: 1px solid white;
+    color: white;
+}
+
+.loginInput:focus-visible {
+    outline: none;
+    border-bottom: 1px solid white;
+}
+
+.loginFormButton {
+    margin-top: 25px;
+}

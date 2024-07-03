@@ -1,0 +1,9 @@
+.navbar {
+    background-color: rgba(35, 37, 46, 0.9);
+    color: #fffffa;
+    padding: 15px;
+}
+
+.navbar-brand {
+    color: #fffffa
+}

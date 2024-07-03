@@ -1,12 +1,13 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import "../Navbar/navbar.css";
 
 export const Navbar = () => {
 	return (
-		<nav className="navbar navbar-light" style={{backgroundColor: "#3A4343"}}>
+		<nav className="navbar navbar-light">
 			<div className="container">
 				<Link to="/" style={{textDecoration: "none"}}>
-					<span className="navbar-brand mb-0 h1">Home</span>
+					<span className="navbar-brand text-light mb-0 h1">F2PF</span>
 				</Link>
 				<div className="ml-auto">
 					<Link to="/login">
