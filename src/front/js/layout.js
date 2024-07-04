@@ -8,6 +8,7 @@ import { Demo } from "./pages/demo";
 import { Single } from "./pages/single";
 import { Login } from "./pages/Login/login.jsx";
 import { Display } from "./pages/Display/display.jsx";
+import { GameCard } from "./component/GameCard/gamecard.jsx";
 import injectContext from "./store/appContext";
 
 import { Navbar } from "./component/Navbar/navbar.js";
