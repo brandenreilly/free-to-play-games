@@ -11,7 +11,7 @@ export const SingleDisplay = () => {
 
     return (
         <div className="container">
-
+            
         </div>
     )
 }
