@@ -2,10 +2,12 @@ import React, { useContext , useState , useEffect } from "react";
 import { Context } from "../../store/appContext";
 import { GameCard } from "../../component/GameCard/gamecard.jsx";
 import "../Display/display.css"
+import { useNavigate } from "react-router-dom";
 
 export const Display = () => {
     const { store , actions } = useContext(Context)
     const [ games , setGames ] = useState(null)
+    const navigate = useNavigate()
     
     useEffect(()=>{    // Happens once on page load.
         getGames()
@@ -27,29 +29,18 @@ export const Display = () => {
 
     return (
         <div className="row mx-auto mt-5 d-flex justify-content-center">
-            <div className="col-2">
-               <div className="row d-flex justify-content-center text-center align-items-center">
-                    <p className="text-white">Categories</p>
-               </div>
-               <div className="row d-flex justify-content-center text-center">
-                    <form className="d-flex justify-content-center">
-                        <select className="form-control w-50">
-                            <option value={"placeholder"}>Sort by...</option>
-                            <option>Release Date</option>
-                            <option>Popularity</option>
-                            <option>Alphabetical</option>
-                            <option>Relevance</option>
-                        </select>
-                    </form>
+            <div className="col-3">
+               <div className="row">
+
                </div>
             </div>
-            <div className="col-10">
+            <div className="col-9">
                 <div className="row mx-auto mt-3 d-flex justify-content-center">
                     {games ? games.slice(0, 8).map((data, ind)=>{
                         {console.log(data)}
                         return (
-                            <div className="col-3 d-flex justify-content-center mx-0 mb-3 p-0 overflow-auto">
-                                <div className="card" style={{width: "18rem"}} key={ind}>
+                            <div className="col-lg-3 col-xs-1 d-flex justify-content-center mx-0 mb-3 p-0 overflow-auto">
+                                <div className="card" style={{width: "17rem"}} key={ind}>
                                     <img src={data.thumbnail} className="card-img-top" alt={data.title}/>
                                     <div className="card-body">
                                         <h5 className="card-title">{data.title}</h5>
