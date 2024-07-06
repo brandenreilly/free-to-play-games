@@ -34,7 +34,7 @@ export const Display = () => {
                 <div className="row d-flex justify-content-center">
                     <div className="col-10 d-flex justify-content-center">
                         <p className="text-white">Search Filters</p>
-                    </div>
+                    </div> 
                 </div>
                 <div className="row d-flex justify-content-center">
                     <div className="col-10 d-flex justify-content-center">
