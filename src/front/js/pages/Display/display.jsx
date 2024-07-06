@@ -29,13 +29,33 @@ export const Display = () => {
 
     return (
         <div className="row mx-auto mt-5 d-flex justify-content-center">
-            <div className="col-3">
-               <div className="row">
-
-               </div>
+            <div className="col-3 responsiveBreakpoint">
+                <div className="filterContainer">
+                <div className="row d-flex justify-content-center">
+                    <div className="col-10 d-flex justify-content-center">
+                        <p className="text-white">Search Filters</p>
+                    </div>
+                </div>
+                <div className="row d-flex justify-content-center">
+                    <div className="col-10 d-flex justify-content-center">
+                        <select className="">
+                            <option value={"placeholder"}>Select a category</option>
+                            <option value={"release-date"}>Release Date</option>
+                            <option value={"relevance"}>Relevance</option>
+                            <option value={"alphabetical"}>Alphabetical</option>
+                            <option value={"popularity"}>Popularity</option>
+                        </select>
+                    </div>
+                </div>
+                <div className="row d-flex justify-content-center mt-2">
+                    <div className="col-10 d-flex justify-content-center">
+                        <button className="btn btn-light">Filter</button>
+                    </div>
+                </div>
+                </div>
             </div>
             <div className="col-9">
-                <div className="row mx-auto mt-3 d-flex justify-content-center">
+                <div className="row mx-auto d-flex justify-content-center">
                     {games ? games.slice(0, 8).map((data, ind)=>{
                         {console.log(data)}
                         return (

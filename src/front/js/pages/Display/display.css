@@ -1,3 +1,15 @@
+@media (max-width: 768px) {
+    .responsiveBreakpoint {
+        display: none;
+    }
+  }
+
+.filterContainer {
+    background-color: #2A3840;
+    border-radius: 40px;
+    height: 400px;
+}
+
 .scroll {
     max-height: 125px;
     overflow-y: auto;
