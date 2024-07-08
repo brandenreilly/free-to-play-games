@@ -9,6 +9,7 @@ import { Single } from "./pages/single";
 import { Login } from "./pages/Login/login.jsx";
 import { Display } from "./pages/Display/display.jsx";
 import { GameCard } from "./component/GameCard/gamecard.jsx";
+import { Footer } from "./component/Footer/footer.jsx";
 import injectContext from "./store/appContext";
 
 import { Navbar } from "./component/Navbar/navbar.js";
@@ -35,6 +36,7 @@ const Layout = () => {
                         <Route element={<Display />} path="/games" />
                         <Route element={<h1>Not found!</h1>} />
                     </Routes>
+                    <Footer />
                 </ScrollToTop>
             </BrowserRouter>
         </div>
