@@ -8,6 +8,7 @@ import { Demo } from "./pages/demo";
 import { Single } from "./pages/single";
 import { Login } from "./pages/Login/login.jsx";
 import { Display } from "./pages/Display/display.jsx";
+import { SingleDisplay } from "./pages/Display/SingleDisplay/singledisplay.jsx";
 import { GameCard } from "./component/GameCard/gamecard.jsx";
 import { Footer } from "./component/Footer/footer.jsx";
 import injectContext from "./store/appContext";
@@ -34,6 +35,7 @@ const Layout = () => {
                         <Route element={<Demo />} path="/demo" />
                         <Route element={<Single />} path="/single/:theid" />
                         <Route element={<Display />} path="/games" />
+                        <Route element={<SingleDisplay />} path="/game/:id" />
                         <Route element={<h1>Not found!</h1>} />
                     </Routes>
                     <Footer />
