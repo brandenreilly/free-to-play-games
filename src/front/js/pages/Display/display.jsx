@@ -175,7 +175,7 @@ export const Display = () => {
                                 </div>
                             </div>
                         )
-                    }) : <div className="d-flex justify-content-center text-center"><h5 className="text-white">LOADING</h5></div>}
+                    }) : <div className="d-flex justify-content-center text-center"><h5 className="text-light">LOADING...</h5></div>}
                 </div>
             </div>
         </div>

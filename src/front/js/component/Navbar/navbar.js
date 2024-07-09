@@ -4,7 +4,7 @@ import "../Navbar/navbar.css";
 
 export const Navbar = () => {
 	return (
-		<nav className="navbar navbar-light">
+		<nav className="navbar navbar-light px-1 py-1"> 
 			<div className="container">
 				<Link to="/" style={{textDecoration: "none"}}>
 					<span className="navbar-brand text-light mb-0 h1">F2PF</span>

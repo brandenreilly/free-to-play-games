@@ -29,23 +29,36 @@ export const SingleDisplay = () => {
 
     return (
         <div className="container">
-            <div className="row">
+            <div className="row mt-5">
                 <div className="col-4">
-                    <div className="row">
-                        <img src={gameDetails.thumbnail} alt={gameDetails.title}/>
-                    </div>
-                    <div className="row">
-                        <div className="col-6 d-flex justify-content-start">
-                            <button className="btn btn-secondary text-light" disabled>FREE</button>
+                    <div className="sticky-top" style={{top: '40px'}}>
+                        <div className="row d-flex justify-content-end">
+                            <img src={gameDetails.thumbnail} alt={gameDetails.title} className="h-75 w-75"/>
                         </div>
-                        <div className="col-6 d-flex justify-content-end">
-                            <a className="btn btn-secondary text-light" href={gameDetails.game_url} target="_blank">Play Game</a>
+                        <div className="row mt-2">
+                            <div className="col-6 d-flex justify-content-end">
+                                <button className="btn btn-secondary text-light" disabled>FREE</button>
+                            </div>
+                            <div className="col-6 d-flex justify-content-end">
+                                <a className="btn btn-secondary text-light" href={gameDetails.game_url} target="_blank">Play Game</a>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div className="col-8">
+                <div className="col-7 px-3">
+                    <h6 className="text-light">{gameDetails.description}</h6>
+                    <h6 className="text-light">{gameDetails.description}</h6>
+                    <h6 className="text-light">{gameDetails.description}</h6>
+                    <h6 className="text-light">{gameDetails.description}</h6>
+                    <h6 className="text-light">{gameDetails.description}</h6>
+                    <h6 className="text-light">{gameDetails.description}</h6>
+                    <h6 className="text-light">{gameDetails.description}</h6>
+                    <h6 className="text-light">{gameDetails.description}</h6>
+                    <h6 className="text-light">{gameDetails.description}</h6>
+                    <h6 className="text-light">{gameDetails.description}</h6>
                     <h6 className="text-light">{gameDetails.description}</h6>
                 </div>
+                <div className="col-1"></div>
             </div>
         </div>
     )
