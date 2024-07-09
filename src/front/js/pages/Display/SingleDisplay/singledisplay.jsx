@@ -31,7 +31,7 @@ export const SingleDisplay = () => {
         <div className="container">
             <div className="row mt-5">
                 <div className="col-4">
-                    <div className="sticky-top" style={{top: '40px'}}>
+                    <div className="sticky-top" style={{top: '80px'}}>
                         <div className="row d-flex justify-content-end">
                             <img src={gameDetails.thumbnail} alt={gameDetails.title} className="h-75 w-75"/>
                         </div>

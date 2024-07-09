@@ -9,7 +9,6 @@
     border-radius: 40px;
     padding: 15px;
     color: white;
-    
 }
 
 .scroll {
@@ -20,4 +19,32 @@
 .card-styling {
     background-color: rgba(35, 37, 46, 0.9);
     color: white;
+}
+
+.card-styling { 
+    transition: box-shadow 0.3s ease; 
+}
+
+.card-styling:hover { 
+    box-shadow: rgba(255, 255, 255, 0.20) 0px 5px 15px; 
+}
+
+/* width */
+::-webkit-scrollbar {
+    width: 10px;
+}
+  
+  /* Track */
+::-webkit-scrollbar-track {
+    background: rgba(35, 37, 46, 0.9); 
+}
+   
+  /* Handle */
+::-webkit-scrollbar-thumb {
+    background: #474747; 
+}
+  
+  /* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #353535; 
 }

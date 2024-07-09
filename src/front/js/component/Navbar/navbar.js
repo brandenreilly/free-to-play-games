@@ -4,14 +4,18 @@ import "../Navbar/navbar.css";
 
 export const Navbar = () => {
 	return (
-		<nav className="navbar navbar-light px-1 py-1"> 
-			<div className="container">
-				<Link to="/" style={{textDecoration: "none"}}>
-					<span className="navbar-brand text-light mb-0 h1">F2PF</span>
-				</Link>
-				<div className="ml-auto">
-					<Link to="/login">
-						<button className="btn btn-light">Login</button>
+		<nav className="navbar navbar-expand-lg py-1 px-1 fixed-top">
+			<div className="container-fluid">
+				<h6 className="navbar-brand">F2PF</h6>
+				<button className="navbar-toggler navbar-dark navbar-styling" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation" style={{ color: 'white' }}>
+					<span className="navbar-toggler-icon"></span>
+				</button>
+				<div className="collapse navbar-collapse" id="navbarTogglerDemo02">
+					<ul className="navbar-nav me-auto mb-2 mb-lg-0">
+						{/* Items to put in Navbar goes here. */}
+					</ul>
+					<Link to={'/login'}>
+						<button className="btn btn-outline-light">Login</button>
 					</Link>
 				</div>
 			</div>
