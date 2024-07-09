@@ -1,7 +1,7 @@
 import React, { useContext , useState , useEffect } from "react";
 import { Context } from "../../store/appContext";
 import "../Display/display.css"
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export const Display = () => {
     const { store , actions } = useContext(Context)
@@ -168,7 +168,9 @@ export const Display = () => {
                                     </div>
                                     <div className="card-footer d-flex justify-content-between align-items-center">
                                         <p className="text-secondary m-0">{data.genre}</p>
-                                        <a href="#" className="btn btn-primary">Check it out!</a>
+                                    <Link to={`/game/${data.id}`} state={data}>
+                                        <button className="btn btn-secondary">Check it out!</button>
+                                    </Link>    
                                     </div>
                                 </div>
                             </div>
