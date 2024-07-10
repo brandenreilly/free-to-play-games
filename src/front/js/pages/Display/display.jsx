@@ -6,6 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 export const Display = () => {
     const { store, actions } = useContext(Context)
     const [games, setGames] = useState([])
+    const [nextGameSet, setNextGameSet] = useState([])
     const [selectValue, setSelectValue] = useState("placeholder")
     const [categoryValue, setCategoryValue] = useState("Relevance")
     const [selectPlatValue, setSelectPlatValue] = useState("placeholder")
@@ -114,10 +115,16 @@ export const Display = () => {
 
     const getMoreGames = () => {
         let arrValue = sessionStorage.getItem('arrValue')
-        let nextSet = arrValue + 16
-        return games.slice(arrValue, nextSet).map((data, ind) => {
-            console.log(data)
-        })
+        if (arrValue) {
+            let nextSet = parseInt(arrValue) + 16
+            let newArr = []
+            games.slice(arrValue, nextSet).map((data, ind) => {
+                newArr.push(data)
+                console.log(data, ind)
+                sessionStorage.setItem('arrValue', parseInt(arrValue) + (ind + 1))
+            })
+            setNextGameSet(newArr)
+        }
     }
 
     return (
@@ -187,7 +194,27 @@ export const Display = () => {
                         }) : <div className="spinner-border text-light" role="status">
                             <span className="visually-hidden">Loading...</span>
                         </div>}
-                        <button className="btn btn-light text-dark" onClick={() => { getMoreGames() }}>Next</button>
+                    </div>
+                    <div className="row mx-auto d-flex justify-content-center">
+                        {nextGameSet.length > 0 ? nextGameSet.slice(0, 16).map((data, ind) => {
+                            return (
+                                <div className="card-shadow col-lg-3 col-md-6 col-xs-1 d-flex justify-content-center mx-0 mb-3 p-0 overflow-auto" key={ind}>
+                                    <Link to={`/game/${data.id}`} state={data} style={{ textDecoration: 'none' }}>
+                                        <div className="card card-styling h-100" style={{ width: "17rem" }}>
+                                            <img src={data.thumbnail} className="card-img-top" alt={data.title} />
+                                            <div className="card-body">
+                                                <h5 className="card-title">{data.title}</h5>
+                                                <p className="card-text scroll">{data.short_description}</p>
+                                            </div>
+                                            <div className="card-footer d-flex justify-content-between align-items-center">
+                                                <span className="badge rounded-pill bg-secondary text-light m-0">{data.genre}</span>
+                                                <span className="text-light m-0">{(data.platform == 'PC (Windows)') ? <i className="fa-brands fa-windows"></i> : <i className="fa-regular fa-window-maximize"></i>}</span>
+                                            </div>
+                                        </div>
+                                    </Link>
+                                </div>
+                            )
+                        }) : <div className="col-6 d-flex justify-content-center"><button className="btn btn-light text-dark" onClick={() => { getMoreGames() }}>Next</button></div>}
                     </div>
                 </div>
             </div>
