@@ -112,6 +112,14 @@ export const Display = () => {
         }
     }
 
+    const getMoreGames = () => {
+        let arrValue = sessionStorage.getItem('arrValue')
+        let nextSet = arrValue + 16
+        return games.slice(arrValue, nextSet).map((data, ind) => {
+            console.log(data)
+        })
+    }
+
     return (
         <div className="">
             <div className="row mx-auto mt-3 d-flex justify-content-center">
@@ -158,6 +166,7 @@ export const Display = () => {
                 <div className="col-9">
                     <div className="row mx-auto d-flex justify-content-center">
                         {games.length > 0 ? games.slice(0, 16).map((data, ind) => {
+                            sessionStorage.setItem('arrValue', ind + 1)
                             return (
                                 <div className="card-shadow col-lg-3 col-md-6 col-xs-1 d-flex justify-content-center mx-0 mb-3 p-0 overflow-auto" key={ind}>
                                     <Link to={`/game/${data.id}`} state={data} style={{ textDecoration: 'none' }}>
@@ -178,6 +187,7 @@ export const Display = () => {
                         }) : <div className="spinner-border text-light" role="status">
                             <span className="visually-hidden">Loading...</span>
                         </div>}
+                        <button className="btn btn-light text-dark" onClick={() => { getMoreGames() }}>Next</button>
                     </div>
                 </div>
             </div>
