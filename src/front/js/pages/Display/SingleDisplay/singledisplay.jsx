@@ -139,8 +139,27 @@ export const SingleDisplay = () => {
                         </div>
                     </div>
                     <div className="row">
-                        <div className="col-12">
-                            <p className="text-light">{gameDetails.description}</p>
+                        <div className="col-4">
+                            <p className="text-secondary my-auto" style={{ display: 'block' }}>OS:</p>
+                            <p className="text-light">{(gameDetails.minimum_system_requirements) && gameDetails.minimum_system_requirements.os}</p>
+                        </div>
+                        <div className="col-4">
+                            <p className="text-secondary my-auto" style={{ display: 'block' }}>Memory:</p>
+                            <p className="text-light my-auto">{(gameDetails.minimum_system_requirements) && gameDetails.minimum_system_requirements.memory}</p>
+                        </div>
+                        <div className="col-4">
+                            <p className="text-secondary my-auto" style={{ display: 'block' }}>Graphics:</p>
+                            <p className="text-light my-auto">{(gameDetails.minimum_system_requirements) && gameDetails.minimum_system_requirements.graphics}</p>
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="col-4">
+                            <p className="text-secondary my-auto" style={{ display: 'block' }}>Storage:</p>
+                            <p className="text-light my-auto">{(gameDetails.minimum_system_requirements) && gameDetails.minimum_system_requirements.storage}</p>
+                        </div>
+                        <div className="col-4">
+                            <p className="text-secondary my-auto" style={{ display: 'block' }}>Processor:</p>
+                            <p className="text-light my-auto">{(gameDetails.minimum_system_requirements) && gameDetails.minimum_system_requirements.processor}</p>
                         </div>
                     </div>
 
@@ -161,7 +180,7 @@ export const SingleDisplay = () => {
             <dialog className="p-0" ref={dialogRef}>
                 <div className="dialogContainer">
                     {(activeImage ?
-                        <img className="w-100 h-100" style={{ objectFit: "contain" }} src={activeImage} />
+                        <img className="w-100 h-100" src={activeImage} />
                         : <></>)}
                 </div>
 
