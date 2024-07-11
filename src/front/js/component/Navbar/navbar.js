@@ -15,6 +15,9 @@ export const Navbar = () => {
 					<ul className="navbar-nav me-auto mb-2 mb-lg-0">
 						{/* Items to put in Navbar goes here. */}
 					</ul>
+					<Link to={'/games'}>
+						<button className="btn btn-outline-light">Games</button>
+					</Link>
 					<Link to={'/login'}>
 						<button className="btn btn-outline-light">Login</button>
 					</Link>
