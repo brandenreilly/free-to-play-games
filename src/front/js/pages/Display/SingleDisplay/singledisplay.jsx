@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useRef } from "react";
 import "../SingleDisplay/singledisplay.css"
 import { Context } from "../../../store/appContext";
 import { useLocation } from "react-router-dom";
@@ -7,11 +7,20 @@ export const SingleDisplay = () => {
     let location = useLocation()
     const { store, actions } = useContext(Context)
     const [gameDetails, setGameDetails] = useState({})
+    const [activeImage, setActiveImage] = useState()
     const data = location.state
+    const dialogRef = useRef()
+
+    console.log(activeImage)
 
     useEffect(() => {     // Happens once on page load.
         getGameById(data.id)
     }, [])
+
+    useEffect(() => {
+        if (!activeImage) return;
+        else dialogRef.current.showModal()
+    }, [activeImage])
 
     const getGameById = (id) => {
         let url = `https://free-to-play-games-database.p.rapidapi.com/api/game?id=${id}}`
@@ -33,6 +42,7 @@ export const SingleDisplay = () => {
         day: "numeric",
         timeZone: 'America/New_York',
     };
+    let screenshots = gameDetails.screenshots
 
     return (
         <div className="container">
@@ -111,9 +121,17 @@ export const SingleDisplay = () => {
                         </div>
                     </div>
                     <div className="row">
-                        <div className="col-12">
-                            <p className="text-light">{gameDetails.description}</p>
-                        </div>
+                        {(gameDetails.screenshots) ? gameDetails.screenshots.map((data, ind) => {
+                            return (
+                                <div className="col-4" key={`${data.id}_${ind}`}>
+                                    <a className="" onClick={() => setActiveImage(data.image)}>
+                                        <img className="rounded img-fluid" src={data.image} />
+                                    </a>
+                                </div>
+                            )
+                        }) : <div className="spinner-border text-light" role="status">
+                            <span className="visually-hidden">Loading...</span>
+                        </div>}
                     </div>
                     <div className="row">
                         <div className="col-12">
@@ -140,6 +158,14 @@ export const SingleDisplay = () => {
                 </div>
                 <div className="col-1"></div>
             </div>
+            <dialog className="p-0" ref={dialogRef}>
+                <div className="dialogContainer">
+                    {(activeImage ?
+                        <img className="w-100 h-100" style={{ objectFit: "contain" }} src={activeImage} />
+                        : <></>)}
+                </div>
+
+            </dialog>
         </div>
     )
 }
