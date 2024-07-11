@@ -11,16 +11,25 @@ export const SingleDisplay = () => {
     const data = location.state
     const dialogRef = useRef()
 
-    console.log(activeImage)
-
     useEffect(() => {     // Happens once on page load.
         getGameById(data.id)
     }, [])
 
     useEffect(() => {
         if (!activeImage) return;
-        else dialogRef.current.showModal()
+        dialogRef.current.showModal();
+        dialogRef.current.addEventListener('close', closeModal);
+        document.body.style.overflow = 'hidden';
+
+        return () => {
+            dialogRef.current.removeEventListener('close', closeModal)
+        }
     }, [activeImage])
+
+    const closeModal = () => {
+        if (!activeImage) return
+        else dialogRef.current.close(); setActiveImage(undefined); document.body.style.overflow = ''
+    }
 
     const getGameById = (id) => {
         let url = `https://free-to-play-games-database.p.rapidapi.com/api/game?id=${id}}`
@@ -35,6 +44,7 @@ export const SingleDisplay = () => {
             .then(resp => resp.json())
             .then(data => setGameDetails(data))
     }
+
     var date = new Date(gameDetails.release_date)
     const options = {
         year: "numeric",
@@ -177,13 +187,13 @@ export const SingleDisplay = () => {
                 </div>
                 <div className="col-1"></div>
             </div>
-            <dialog className="p-0" ref={dialogRef}>
-                <div className="dialogContainer">
+            <dialog className="p-0 position-relative overflow-visible" ref={dialogRef}>
+                <div className="position-relative dialogContainer" style={{ zIndex: '0' }}>
                     {(activeImage ?
                         <img className="w-100 h-100" src={activeImage} />
                         : <></>)}
                 </div>
-
+                <button className="shadow p-0 d-flex justify-content-center align-items-center position-absolute" onClick={() => { closeModal() }} style={{ top: '-15px', right: '-15px', zIndex: '1', border: 'none', height: '28px', width: '28px', backgroundColor: 'transparent' }}><i className="fa-solid fa-circle-xmark fa-xl text-light"></i></button>
             </dialog>
         </div>
     )
