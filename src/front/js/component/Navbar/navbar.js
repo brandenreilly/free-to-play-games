@@ -7,18 +7,23 @@ export const Navbar = () => {
 	return (
 		<nav className="navbar navbar-expand-lg py-1 px-1 fixed-top">
 			<div className="container-fluid">
-				<img src={f2pf_img} style={{ height: '45px' }} />
+				<a href="/">
+					<img src={f2pf_img} style={{ height: '45px' }} />
+				</a>
 				<button className="navbar-toggler navbar-dark navbar-styling" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation" style={{ color: 'white' }}>
 					<span className="navbar-toggler-icon"></span>
 				</button>
 				<div className="collapse navbar-collapse" id="navbarTogglerDemo02">
-					<ul className="navbar-nav me-auto mb-2 mb-lg-0">
+					<ul className="navbar-nav mb-2 mb-lg-0">
 						{/* Items to put in Navbar goes here. */}
 					</ul>
-					<Link to={'/games'}>
+					<Link to={'/search'} style={{ marginLeft: 'auto' }}>
+						<button className="btn btn-outline-light">Search</button>
+					</Link>
+					<Link to={'/games'} style={{ marginLeft: '5%' }}>
 						<button className="btn btn-outline-light">Games</button>
 					</Link>
-					<Link to={'/login'}>
+					<Link to={'/login'} style={{ marginLeft: '5%' }}>
 						<button className="btn btn-outline-light">Login</button>
 					</Link>
 				</div>

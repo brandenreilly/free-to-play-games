@@ -4,3 +4,8 @@
     max-width: 80vw;
     max-height: 85vh;
 }
+
+button:focus {
+    color: white;
+    border: none;
+} 
