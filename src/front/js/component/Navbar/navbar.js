@@ -7,9 +7,9 @@ export const Navbar = () => {
 	return (
 		<nav className="navbar navbar-expand-lg py-1 px-1 fixed-top">
 			<div className="container-fluid">
-				<a href="/">
+				<Link to={'/'}>
 					<img src={f2pf_img} style={{ height: '45px' }} />
-				</a>
+				</Link>
 				<button className="navbar-toggler navbar-dark navbar-styling" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation" style={{ color: 'white' }}>
 					<span className="navbar-toggler-icon"></span>
 				</button>

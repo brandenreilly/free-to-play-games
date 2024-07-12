@@ -34,7 +34,7 @@ def handle_login():
         if password == find_user.password:
             logged_in = find_user.serialize()
             access_token = create_access_token(identity=username)
-            return jsonify(access_token=access_token, user=logged_in), 200
+            return jsonify(access_token=access_token, id=find_user.id), 200
         else:
             return jsonify({"msg": "Incorrect login information."}), 401
     else:
@@ -46,11 +46,30 @@ def handle_create_user():
     new_user = User(email=sent_info['email'], username=sent_info['username'], password=sent_info['password'])
     db.session.add(new_user)
     db.session.commit()
-    get_user = User.query.filter_by(username=sent_info['username']).first()
+    get_user = User.query.filter_by(email=sent_info['email']).first()
     if get_user:
         return jsonify({"msg": "Account created successfully."}), 201
     else:
         return jsonify({"msg": "There was an error creating your account."}), 500
+    
+@api.route('/finduser/<email>', methods=['GET'])
+def handle_get_user(email):
+    find_user = User.query.filter_by(email=email).first()
+    if find_user:
+        send_user = find_user.serialize()
+        return jsonify(id=find_user.id), 200
+    
+@api.route('/update/username', methods=['PATCH'])
+@jwt_required()
+def handle_update_user():
+    current_user = get_jwt_identity()
+    sent_info = request.json
+    username = sent_info['username']
+    find_user = User.query.filter_by(username=current_user).first()
+    if(find_user):
+        find_user.username = username
+        db.session.commit()
+        return jsonify({"msg": "Updated Successfully"}), 201
 
 @api.route('/token', methods=['GET'])
 @jwt_required()

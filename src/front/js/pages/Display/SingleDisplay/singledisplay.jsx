@@ -52,9 +52,8 @@ export const SingleDisplay = () => {
         day: "numeric",
         timeZone: 'America/New_York',
     };
-    let screenshots = gameDetails.screenshots
     return (
-        <div className="container">
+        <div className="container mb-5">
             <div className="row mt-5">
                 <div className="col-4">
                     <div className="sticky-top" style={{ top: '80px' }}>
@@ -178,28 +177,14 @@ export const SingleDisplay = () => {
                             <p className="text-light my-auto">{(gameDetails.minimum_system_requirements) && gameDetails.minimum_system_requirements.processor}</p>
                         </div>
                     </div>
-
-                    {/* <h6 className="text-light">{gameDetails.description}</h6>
-                    <h6 className="text-light">{gameDetails.description}</h6>
-                    <h6 className="text-light">{gameDetails.description}</h6>
-                    <h6 className="text-light">{gameDetails.description}</h6>
-                    <h6 className="text-light">{gameDetails.description}</h6>
-                    <h6 className="text-light">{gameDetails.description}</h6>
-                    <h6 className="text-light">{gameDetails.description}</h6>
-                    <h6 className="text-light">{gameDetails.description}</h6>
-                    <h6 className="text-light">{gameDetails.description}</h6>
-                    <h6 className="text-light">{gameDetails.description}</h6>
-                    <h6 className="text-light">{gameDetails.description}</h6> */}
                 </div>
                 <div className="col-1"></div>
             </div>
             <dialog className="p-0 position-relative overflow-visible" ref={dialogRef}>
                 <div className="position-relative dialogContainer" style={{ zIndex: '0' }}>
-                    {(activeImage ?
-                        <img className="w-100 h-100" src={activeImage} />
-                        : <></>)}
+                    {(activeImage && <img className="w-100 h-100" src={activeImage} />)}
                 </div>
-                <button className="shadow p-0 d-flex justify-content-center align-items-center position-absolute" onClick={closeModal} style={{ top: '-15px', right: '-15px', zIndex: '2000', border: 'none', height: '28px', width: '28px', backgroundColor: 'transparent' }}><i className="fa-solid fa-circle-xmark fa-xl text-light"></i></button>
+                <button className="shadow p-0 d-flex justify-content-center align-items-center position-absolute" onClick={closeModal} style={{ top: '0', zIndex: 'auto', border: 'none', height: '28px', width: '28px', backgroundColor: 'transparent' }}><i className="fa-solid fa-circle-xmark fa-xl text-light"></i></button>
             </dialog>
         </div>
     )
