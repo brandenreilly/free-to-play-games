@@ -59,15 +59,15 @@ def handle_get_user(email):
         send_user = find_user.serialize()
         return jsonify(id=find_user.id), 200
     
-@api.route('/update/username', methods=['PATCH'])
+@api.route('/update/password', methods=['PATCH'])
 @jwt_required()
 def handle_update_user():
     current_user = get_jwt_identity()
     sent_info = request.json
-    username = sent_info['username']
+    password = sent_info['password']
     find_user = User.query.filter_by(username=current_user).first()
     if(find_user):
-        find_user.username = username
+        find_user.password = password
         db.session.commit()
         return jsonify({"msg": "Updated Successfully"}), 201
 

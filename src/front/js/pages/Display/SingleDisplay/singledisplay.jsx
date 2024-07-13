@@ -13,6 +13,10 @@ export const SingleDisplay = () => {
 
     useEffect(() => {     // Happens once on page load.
         getGameById(data.id)
+        document.body.addEventListener('click', clickClose)
+        return () => {
+            document.body.removeEventListener('click', clickClose)
+        }
     }, [])
 
     useEffect(() => {
@@ -20,15 +24,50 @@ export const SingleDisplay = () => {
         dialogRef.current.showModal();
         dialogRef.current.addEventListener('close', closeModal);
         document.body.style.overflow = 'hidden';
+        document.body.addEventListener('keydown', handleOnKeyDown);
 
         return () => {
             dialogRef.current.removeEventListener('close', closeModal)
+            document.body.removeEventListener('keydown', handleOnKeyDown);
         }
     }, [activeImage])
+
+    function clickClose(e) {
+        const diagContainer = document.querySelector('.dialogContainer')
+        if (diagContainer && !e.composedPath().includes(diagContainer)) {
+            dialogRef.current.close();
+            setActiveImage(undefined);
+            document.body.style.overflow = '';
+        }
+    }
 
     const closeModal = () => {
         if (!activeImage) return
         else dialogRef.current.close(); setActiveImage(undefined); document.body.style.overflow = ''
+    }
+
+    function handleOnKeyDown(e) {
+        if (!gameDetails.screenshots) return;
+        const currentIndex = gameDetails.screenshots?.findIndex(({ id }) => id === activeImage.id)
+        if (typeof currentIndex === 'undefined') return;
+        if (e.key === 'ArrowRight') {
+            if (currentIndex + 1 < gameDetails.screenshots.length) {
+                const nextImage = gameDetails.screenshots[currentIndex + 1]
+                setActiveImage(nextImage)
+            } else {
+                const nextImage = gameDetails.screenshots[0]
+                setActiveImage(nextImage)
+            }
+        }
+        else if (e.key === 'ArrowLeft') {
+            if (currentIndex !== 0) {
+                const nextImage = gameDetails.screenshots[currentIndex - 1]
+                setActiveImage(nextImage)
+            } else {
+                const nextImage = gameDetails.screenshots[gameDetails.screenshots.length - 1]
+                setActiveImage(nextImage)
+            }
+        }
     }
 
     const getGameById = (id) => {
@@ -73,10 +112,10 @@ export const SingleDisplay = () => {
                 <div className="col-7 px-3">
                     <div className="row">
                         <div className="col-12">
-                            <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="/" style={{ textDecoration: 'none', color: 'white' }}>Home</a></li>
-                                <li class="breadcrumb-item"><a href="/games" style={{ textDecoration: 'none', color: 'white' }}>Games List</a></li>
-                                <li class="breadcrumb-item active" aria-current="page">{gameDetails.title}</li>
+                            <ol className="breadcrumb">
+                                <li className="breadcrumb-item"><a href="/" style={{ textDecoration: 'none', color: 'white' }}>Home</a></li>
+                                <li className="breadcrumb-item"><a href="/games" style={{ textDecoration: 'none', color: 'white' }}>Games List</a></li>
+                                <li className="breadcrumb-item active" aria-current="page">{gameDetails.title}</li>
                             </ol>
                         </div>
                     </div>
@@ -105,7 +144,7 @@ export const SingleDisplay = () => {
                         {(gameDetails.screenshots) ? gameDetails.screenshots.map((data, ind) => {
                             return (
                                 <div className="col-4" key={`${data.id}_${ind}`}>
-                                    <a className="" onClick={() => setActiveImage(data.image)}>
+                                    <a className="" onClick={() => setActiveImage({ image: data.image, id: data.id })}>
                                         <img className="rounded img-fluid" src={data.image} />
                                     </a>
                                 </div>
@@ -121,7 +160,7 @@ export const SingleDisplay = () => {
                     </div>
                     <div className="row">
                         <div className="col-12">
-                            <h6 className="text-secondary"><i class="fa-solid fa-circle-info"></i> Please note this free-to-play game may or may not offer optional in-game purchases.</h6>
+                            <h6 className="text-secondary"><i className="fa-solid fa-circle-info"></i> Please note this free-to-play game may or may not offer optional in-game purchases.</h6>
                         </div>
                     </div>
                     <div className="row mb-2">
@@ -182,9 +221,9 @@ export const SingleDisplay = () => {
             </div>
             <dialog className="p-0 position-relative overflow-visible" ref={dialogRef}>
                 <div className="position-relative dialogContainer" style={{ zIndex: '0' }}>
-                    {(activeImage && <img className="w-100 h-100" src={activeImage} />)}
+                    {(activeImage && <img className="w-100 h-100" src={activeImage.image} />)}
                 </div>
-                <button className="shadow p-0 d-flex justify-content-center align-items-center position-absolute" onClick={closeModal} style={{ top: '0', zIndex: 'auto', border: 'none', height: '28px', width: '28px', backgroundColor: 'transparent' }}><i className="fa-solid fa-circle-xmark fa-xl text-light"></i></button>
+                <button className="shadow p-0 d-flex justify-content-center align-items-center position-absolute" onClick={closeModal} style={{ top: '-15px', right: '-15px', zIndex: 'auto', border: 'none', height: '28px', width: '28px', backgroundColor: 'transparent' }}><i className="fa-solid fa-circle-xmark fa-xl text-light"></i></button>
             </dialog>
         </div>
     )
