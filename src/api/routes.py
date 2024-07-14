@@ -43,15 +43,27 @@ def handle_login():
 @api.route('/create', methods=['POST'])
 def handle_create_user():
     sent_info = request.json
-    new_user = User(email=sent_info['email'], username=sent_info['username'], password=sent_info['password'])
-    db.session.add(new_user)
-    db.session.commit()
-    get_user = User.query.filter_by(email=sent_info['email']).first()
-    if get_user:
-        return jsonify({"msg": "Account created successfully."}), 201
-    else:
-        return jsonify({"msg": "There was an error creating your account."}), 500
-    
+    email = sent_info['email']
+    username = sent_info['username']
+    password = sent_info['password']
+    if email != '':
+        if username != '':
+            if password != '':
+                new_user = User(email=sent_info['email'], username=sent_info['username'], password=sent_info['password'])
+                db.session.add(new_user)
+                db.session.commit()
+                get_user = User.query.filter_by(email=sent_info['email']).first()
+                if get_user:
+                    return jsonify({"completed": True, "msg": "Account created successfully."}), 201
+                else:
+                    return jsonify({"completed": False, "msg": "There was an error creating your account."}), 500
+            else: 
+                return jsonify({"completed": False, "msg": "There was an error creating your account."}), 500
+        else: 
+            return jsonify({"completed": False, "msg": "There was an error creating your account."}), 500
+    else: 
+        return jsonify({"completed": False, "msg": "There was an error creating your account."}), 500
+
 @api.route('/finduser/<email>', methods=['GET'])
 def handle_get_user(email):
     find_user = User.query.filter_by(email=email).first()

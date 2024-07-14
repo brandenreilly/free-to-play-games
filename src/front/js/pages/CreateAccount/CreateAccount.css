@@ -1,0 +1,22 @@
+.loginFormContainer {
+    background: rgba(35, 37, 46, 0.9);
+    border-radius: 20%;
+    margin-top: 75px;
+}
+
+.loginInput {
+    border: none;
+    background: none;
+    border: 1px solid white;
+    border-radius: 5px;
+    color: white;
+}
+
+.loginInput:focus-visible {
+    outline: none;
+    border-bottom: 1px solid white;
+}
+
+.loginFormButton {
+    margin-top: 25px;
+}
