@@ -9,3 +9,8 @@ button:focus {
     color: white;
     border: none;
 } 
+
+dialog::backdrop {
+    background-color: black;
+    opacity: 90%;
+  }

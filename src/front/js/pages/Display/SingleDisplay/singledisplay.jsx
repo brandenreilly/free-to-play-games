@@ -38,6 +38,7 @@ export const SingleDisplay = () => {
             dialogRef.current.close();
             setActiveImage(undefined);
             document.body.style.overflow = '';
+            console.log(e.composedPath())
         }
     }
 
@@ -67,6 +68,32 @@ export const SingleDisplay = () => {
                 const nextImage = gameDetails.screenshots[gameDetails.screenshots.length - 1]
                 setActiveImage(nextImage)
             }
+        }
+    }
+
+    function handleLeft() {
+        if (!gameDetails.screenshots) return;
+        const currentIndex = gameDetails.screenshots?.findIndex(({ id }) => id === activeImage.id)
+        if (typeof currentIndex === 'undefined') return;
+        if (currentIndex !== 0) {
+            const nextImage = gameDetails.screenshots[currentIndex - 1]
+            setActiveImage(nextImage)
+        } else {
+            const nextImage = gameDetails.screenshots[gameDetails.screenshots.length - 1]
+            setActiveImage(nextImage)
+        }
+    }
+
+    function handleRight() {
+        if (!gameDetails.screenshots) return;
+        const currentIndex = gameDetails.screenshots?.findIndex(({ id }) => id === activeImage.id)
+        if (typeof currentIndex === 'undefined') return;
+        if (currentIndex + 1 < gameDetails.screenshots.length) {
+            const nextImage = gameDetails.screenshots[currentIndex + 1]
+            setActiveImage(nextImage)
+        } else {
+            const nextImage = gameDetails.screenshots[0]
+            setActiveImage(nextImage)
         }
     }
 
@@ -222,6 +249,8 @@ export const SingleDisplay = () => {
             <dialog className="p-0 position-relative overflow-visible" ref={dialogRef}>
                 <div className="position-relative dialogContainer" style={{ zIndex: '0' }}>
                     {(activeImage && <img className="w-100 h-100" src={activeImage.image} />)}
+                    <button className="shadow p-0 d-flex justify-content-center align-items-center position-absolute" onClick={handleLeft} style={{ top: '50%', left: '-0px', zIndex: 'auto', border: 'none', height: '28px', width: '28px', backgroundColor: 'transparent' }}><i className="fa-solid fa-chevron-left fa-xl text-light"></i></button>
+                    <button className="shadow p-0 d-flex justify-content-center align-items-center position-absolute" onClick={handleRight} style={{ top: '50%', right: '-0px', zIndex: 'auto', border: 'none', height: '28px', width: '28px', backgroundColor: 'transparent' }}><i className="fa-solid fa-chevron-right fa-xl text-light"></i></button>
                 </div>
                 <button className="shadow p-0 d-flex justify-content-center align-items-center position-absolute" onClick={closeModal} style={{ top: '-15px', right: '-15px', zIndex: 'auto', border: 'none', height: '28px', width: '28px', backgroundColor: 'transparent' }}><i className="fa-solid fa-circle-xmark fa-xl text-light"></i></button>
             </dialog>

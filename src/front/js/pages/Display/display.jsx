@@ -71,7 +71,7 @@ export const Display = () => {
             <div className="row mx-auto mt-3 d-flex justify-content-center">
                 <div className="col-9">
                     <div className="row mx-auto d-flex justify-content-center">
-                        {store.games.length > 0 ? store.games.slice(0, 16).map((data, ind) => {
+                        {store.games.length > 0 ? store.games.map((data, ind) => {
                             sessionStorage.setItem('arrValue', ind + 1)
                             return (
                                 <div className="card-shadow col-lg-3 col-md-6 col-xs-1 d-flex justify-content-center mx-0 mb-3 p-0 overflow-auto" key={ind}>
