@@ -12,6 +12,7 @@ import { SingleDisplay } from "./pages/Display/SingleDisplay/singledisplay.jsx";
 import { GameCard } from "./component/GameCard/gamecard.jsx";
 import { Footer } from "./component/Footer/footer.jsx";
 import { SearchPage } from './pages/SearchPage/SearchPage.jsx'
+import { CreateAccount } from "./pages/CreateAccount/CreateAccount.jsx";
 import injectContext from "./store/appContext";
 
 import { Navbar } from "./component/Navbar/navbar.js";
@@ -38,6 +39,7 @@ const Layout = () => {
                         <Route element={<Display />} path="/games" />
                         <Route element={<SingleDisplay />} path="/game/:id" />
                         <Route element={<SearchPage />} path="/search" />
+                        <Route element={<CreateAccount />} path="/signup" />
                         <Route element={<h1>Not found!</h1>} />
                     </Routes>
                     <Footer />
