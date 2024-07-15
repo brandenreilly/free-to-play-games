@@ -16,6 +16,7 @@ import { CreateAccount } from "./pages/CreateAccount/CreateAccount.jsx";
 import injectContext from "./store/appContext";
 
 import { Navbar } from "./component/Navbar/navbar.js";
+import { ProfilePage } from "./pages/Profile/ProfilePage.jsx";
 
 
 //create your first component
@@ -40,6 +41,7 @@ const Layout = () => {
                         <Route element={<SingleDisplay />} path="/game/:id" />
                         <Route element={<SearchPage />} path="/search" />
                         <Route element={<CreateAccount />} path="/signup" />
+                        <Route element={<ProfilePage />} path="/profile"></Route>
                         <Route element={<h1>Not found!</h1>} />
                     </Routes>
                     <Footer />
