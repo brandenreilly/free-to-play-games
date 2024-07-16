@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, Navigate, Outlet } from "react-router-dom";
 import ScrollToTop from "./component/scrollToTop";
 import { BackendURL } from "./component/backendURL";
 
@@ -18,6 +18,21 @@ import injectContext from "./store/appContext";
 import { Navbar } from "./component/Navbar/navbar.js";
 import { ProfilePage } from "./pages/Profile/ProfilePage.jsx";
 
+const PrivateRoutes = () => {
+    let token = sessionStorage.getItem('token')
+    if (token) {
+        let auth = { 'token': true }
+        return (
+            auth.token ? <Outlet /> : <Navigate to='/login' />
+        )
+    }
+    else {
+        let auth = { 'token': false }
+        return (
+            auth.token ? <Outlet /> : <Navigate to='/login' />
+        )
+    }
+}
 
 //create your first component
 const Layout = () => {
@@ -41,8 +56,11 @@ const Layout = () => {
                         <Route element={<SingleDisplay />} path="/game/:id" />
                         <Route element={<SearchPage />} path="/search" />
                         <Route element={<CreateAccount />} path="/signup" />
-                        <Route element={<ProfilePage />} path="/profile"></Route>
+                        {/* <Route element={<ProfilePage />} path="/profile"></Route> */}
                         <Route element={<h1>Not found!</h1>} />
+                        <Route element={<PrivateRoutes />}>
+                            <Route path='/profile' element={<ProfilePage />} />
+                        </Route>
                     </Routes>
                     <Footer />
                 </ScrollToTop>

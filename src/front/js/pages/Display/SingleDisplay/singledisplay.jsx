@@ -14,6 +14,7 @@ export const SingleDisplay = () => {
     useEffect(() => {     // Happens once on page load.
         getGameById(data.id)
         document.body.addEventListener('click', clickClose)
+        console.log(window.location.pathname)
         return () => {
             document.body.removeEventListener('click', clickClose)
         }

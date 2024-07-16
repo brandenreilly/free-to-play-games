@@ -17,7 +17,10 @@ export const Navbar = () => {
 					<ul className="navbar-nav mb-2 mb-lg-0">
 						{/* Items to put in Navbar goes here. */}
 					</ul>
-					<Link to={'/search'} style={{ marginLeft: 'auto' }}>
+					<Link to={'/profile'} style={{ marginLeft: 'auto' }}>
+						<button className="btn btn-outline-light">Profile</button>
+					</Link>
+					<Link to={'/search'} style={{ marginLeft: '5%' }}>
 						<button className="btn btn-outline-light">Search</button>
 					</Link>
 					<Link to={'/games'} style={{ marginLeft: '5%' }}>
