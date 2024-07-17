@@ -5,6 +5,10 @@ import { Link, useNavigate } from "react-router-dom";
 
 export const Display = () => {
     const { store, actions } = useContext(Context)
+    const [games, setGames] = useState([])
+    const [searchResults, setSearchResults] = useState([])
+    const [inputValue, setInputValue] = useState('')
+    const [type, setType] = useState(null)
     const [selectValue, setSelectValue] = useState("placeholder")
     const [categoryValue, setCategoryValue] = useState("Relevance")
     const [selectPlatValue, setSelectPlatValue] = useState("placeholder")
@@ -14,25 +18,191 @@ export const Display = () => {
     const navigate = useNavigate()
     const genre = ["All", "mmorpg", "shooter", "strategy", "moba", "racing", "sports", "social", "sandbox", "open-world", "survival", "pvp", "pve", "pixel", "voxel", "zombie", "turn-based", "first-person", "third-Person", "top-down", "tank", "space", "sailing", "side-scroller", "superhero", "permadeath", "card", "battle-royale", "mmo", "mmofps", "mmotps", "3d", "2d", "anime", "fantasy", "sci-fi", "fighting", "action-rpg", "action", "military", "martial-arts", "flight", "low-spec", "tower-defense", "horror", "mmorts"]
 
+    useEffect(() => {
+        if (games.length != 0) return;
+        else if (games.length == 0) {
+            handleGetGames()
+        }
+    }, [])
+
+    useEffect(() => {
+        if (games.length >= 0) handleSearch(type)
+    }, [inputValue])
+
     useEffect(() => {     // Happens when the Variable "selectValue" updates.
-        actions.handleSortGames(selectValue)
+        handleSortGames(selectValue)
     }, [selectValue])
 
     useEffect(() => {     // Happens when the Variable "platformValue" updates.
-        actions.handleSortByPlatform(selectPlatValue)
+        handleSortByPlatform(selectPlatValue)
     }, [platformValue])
 
     useEffect(() => {     // Happens when the Variable "genreValue" updates.
-        actions.handleSortByGenre(selectGenreValue)
+        handleSortByGenre(selectGenreValue)
     }, [genreValue])
+
+    const handleSearch = (type) => {
+        if (inputValue.length > 1) {
+            let newArr = []
+            if (type === 'title') {
+                games.map((data, ind) => {
+                    if (data.title.toLowerCase().includes(inputValue.toLowerCase())) {
+                        newArr.push(data)
+                        setGames(newArr)
+                    }
+                })
+            } else if (type === 'dev') {
+                games.map((data, ind) => {
+                    if (data.developer.toLowerCase().includes(inputValue.toLowerCase())) {
+                        newArr.push(data)
+                        setGames(newArr)
+                    }
+                })
+            } else if (type === 'pub') {
+                games.map((data, ind) => {
+                    if (data.publisher.toLowerCase().includes(inputValue.toLowerCase())) {
+                        newArr.push(data)
+                        setGames(newArr)
+                    }
+                })
+            }
+        }
+        else if (inputValue.length === 0) {
+            handleGetGames()
+        }
+    }
+
+    function handleGetGames() {
+        const url = 'https://free-to-play-games-database.p.rapidapi.com/api/games';
+        const options = {
+            method: 'GET',
+            headers: {
+                'x-rapidapi-key': '0be2c6ee08msh09f5b606ef00be5p12323cjsn62bad5bcc967',
+                'x-rapidapi-host': 'free-to-play-games-database.p.rapidapi.com'
+            }
+        };
+        fetch(url, options)
+            .then(resp => resp.json())
+            .then(data => setGames(data))
+    }
+
+    function handleSortGames(keyword) {
+        if (keyword == "placeholder") {
+        }
+        else {
+            let url = `https://free-to-play-games-database.p.rapidapi.com/api/games?sort-by=${keyword}`;
+            let options = {
+                method: 'GET',
+                headers: {
+                    'x-rapidapi-key': '0be2c6ee08msh09f5b606ef00be5p12323cjsn62bad5bcc967',
+                    'x-rapidapi-host': 'free-to-play-games-database.p.rapidapi.com'
+                }
+            };
+            fetch(url, options)
+                .then(resp => resp.json())
+                .then(data => setGames(data))
+        }
+    }
+
+    function handleSortByGenre(keyword) {
+        if (keyword == "placeholder") {
+        }
+        else if (keyword == "All") {
+            let url = `https://free-to-play-games-database.p.rapidapi.com/api/games`
+            let options = {
+                method: 'GET',
+                headers: {
+                    'x-rapidapi-key': '0be2c6ee08msh09f5b606ef00be5p12323cjsn62bad5bcc967',
+                    'x-rapidapi-host': 'free-to-play-games-database.p.rapidapi.com'
+                }
+            }
+            fetch(url, options)
+                .then(resp => resp.json())
+                .then(data => setGames(data))
+        } else {
+            let url = `https://free-to-play-games-database.p.rapidapi.com/api/games?category=${keyword}`
+            let options = {
+                method: 'GET',
+                headers: {
+                    'x-rapidapi-key': '0be2c6ee08msh09f5b606ef00be5p12323cjsn62bad5bcc967',
+                    'x-rapidapi-host': 'free-to-play-games-database.p.rapidapi.com'
+                }
+            }
+            fetch(url, options)
+                .then(resp => resp.json())
+                .then(data => setGames(data))
+        }
+    }
+    function handleSortByPlatform(keyword) {
+        if (keyword == "placeholder") {
+        }
+        else {
+            let url = `https://free-to-play-games-database.p.rapidapi.com/api/games?platform=${keyword}`
+            let options = {
+                method: 'GET',
+                headers: {
+                    'x-rapidapi-key': '0be2c6ee08msh09f5b606ef00be5p12323cjsn62bad5bcc967',
+                    'x-rapidapi-host': 'free-to-play-games-database.p.rapidapi.com'
+                }
+            };
+            fetch(url, options)
+                .then(resp => resp.json())
+                .then(data => setGames(data))
+        }
+    }
+
+    function handleType(clicked) {
+        if (type == null || type != clicked) {
+            setType(clicked)
+        } else if (type == clicked) {
+            setType(null)
+        }
+
+
+    }
 
     return (
         <div className="">
+            <div className="test">
+                <button
+                    className="btn btn-dark text-light button-rounded dropdown-toggle"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                >Test Dropdown</button>
+                <ul className="dropdown-menu">
+                    <li className="dropdown-item">
+                        <button className="btn btn-dark button-rounded">Title</button>
+                    </li>
+                </ul>
+            </div>
+
+            <div className="row mx-auto mt-3 d-flex justify-content-center">
+                <div className="col-9" style={{ color: 'white' }}>
+                    <div className="row">
+                        <div className="col-lg-4 col-md-6 text-center align-items-center">
+                            <button type="button searchbutton" style={{ color: 'white' }} className={`btn btn-dark button-rounded ${type == 'title' && 'active'}`} onClick={() => handleType('title')}>Title</button>
+                        </div>
+                        <div className="col-lg-4 col-md-6 text-center align-items-center">
+                            <button type="button searchbutton" style={{ color: 'white' }} className={`btn btn-dark button-rounded ${type == 'dev' && 'active'}`} onClick={() => handleType('dev')}>Developer</button>
+                        </div>
+                        <div className="col-lg-4 col-md-6 text-center align-items-center">
+                            <button type="button searchbutton" style={{ color: 'white' }} className={`btn btn-dark button-rounded ${type == 'pub' && 'active'}`} onClick={() => handleType('pub')}>Publisher</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {type !== null && <form className='mt-3'>
+                <div className='row mx-auto'>
+                    <div className='col-6 d-flex justify-content-center mx-auto'>
+                        <input type='text' aria-label='Search' placeholder="Search..." value={inputValue} onChange={(e) => { setInputValue(e.target.value) }} className=' w-25 form-control' />
+                    </div>
+                </div>
+            </form>}
             <div className="row mx-auto mt-3 d-flex justify-content-center">
                 <div className="col-9">
                     <div className="row">
                         <div className="col-lg-4 col-md-6 text-center align-items-center">
-                            <button className="btn btn-dark text-light dropdown-toggle" style={{ cursor: "pointer", textDecoration: "none" }} data-bs-toggle="dropdown" aria-expanded="false">
+                            <button className="btn btn-dark button-rounded text-light dropdown-toggle" style={{ cursor: "pointer", textDecoration: "none" }} data-bs-toggle="dropdown" aria-expanded="false">
                                 Sort By: {selectValue != "relevance" ? categoryValue : "Relevance"}
                             </button>
                             <ul className="dropdown-menu" style={{ backgroundColor: "rgba(35, 37, 46, 0.9)" }}>
@@ -44,7 +214,7 @@ export const Display = () => {
                             </ul>
                         </div>
                         <div className="col-lg-4 col-md-6 text-center align-items-center">
-                            <button className="btn btn-dark text-light dropdown-toggle" style={{ cursor: "pointer", textDecoration: "none" }} data-bs-toggle="dropdown" aria-expanded="false">
+                            <button className="button-rounded btn btn-dark text-light dropdown-toggle" style={{ cursor: "pointer", textDecoration: "none" }} data-bs-toggle="dropdown" aria-expanded="false">
                                 Platform: {selectPlatValue != "all" ? platformValue : "All"}
                             </button>
                             <ul className="dropdown-menu" style={{ backgroundColor: "rgba(35, 37, 46, 0.9)" }}>
@@ -55,7 +225,7 @@ export const Display = () => {
                             </ul>
                         </div>
                         <div className="col-lg-4 col-md-6 text-center align-items-center">
-                            <button className="btn btn-dark text-light dropdown-toggle" style={{ cursor: "pointer", textDecoration: "none" }} data-bs-toggle="dropdown" aria-expanded="false">
+                            <button className="button-rounded btn btn-dark text-light dropdown-toggle" style={{ cursor: "pointer", textDecoration: "none" }} data-bs-toggle="dropdown" aria-expanded="false">
                                 Genre/Tag: {genreValue}
                             </button>
                             <ul className="dropdown-menu overflow-auto" style={{ backgroundColor: "rgba(35, 37, 46, 0.9)", height: "200px" }}>
@@ -71,7 +241,7 @@ export const Display = () => {
             <div className="row mx-auto mt-3 d-flex justify-content-center">
                 <div className="col-9">
                     <div className="row mx-auto d-flex justify-content-center">
-                        {store.games.length > 0 ? store.games.map((data, ind) => {
+                        {games.length > 0 ? games.map((data, ind) => {
                             sessionStorage.setItem('arrValue', ind + 1)
                             return (
                                 <div className="card-shadow col-lg-3 col-md-6 col-xs-1 d-flex justify-content-center mx-0 mb-3 p-0 overflow-auto" key={ind}>

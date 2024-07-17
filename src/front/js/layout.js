@@ -54,7 +54,8 @@ const Layout = () => {
                         <Route element={<Single />} path="/single/:theid" />
                         <Route element={<Display />} path="/games" />
                         <Route element={<SingleDisplay />} path="/game/:id" />
-                        <Route element={<SearchPage />} path="/search" />
+                        <Route element={<SearchPage />} path="/search/" />
+                        <Route element={<SearchPage />} path="/search/:type" />
                         <Route element={<CreateAccount />} path="/signup" />
                         {/* <Route element={<ProfilePage />} path="/profile"></Route> */}
                         <Route element={<h1>Not found!</h1>} />
