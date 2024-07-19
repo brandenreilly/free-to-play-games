@@ -18,7 +18,7 @@ export const Display = () => {
     const navigate = useNavigate()
     const genre = ["All", "mmorpg", "shooter", "strategy", "moba", "racing", "sports", "social", "sandbox", "open-world", "survival", "pvp", "pve", "pixel", "voxel", "zombie", "turn-based", "first-person", "third-Person", "top-down", "tank", "space", "sailing", "side-scroller", "superhero", "permadeath", "card", "battle-royale", "mmo", "mmofps", "mmotps", "3d", "2d", "anime", "fantasy", "sci-fi", "fighting", "action-rpg", "action", "military", "martial-arts", "flight", "low-spec", "tower-defense", "horror", "mmorts"]
 
-    useEffect(() => {
+    useEffect(() => {       // Happens once on page load.
         if (games.length != 0) return;
         else if (games.length == 0) {
             handleGetGames()
@@ -163,20 +163,7 @@ export const Display = () => {
 
     return (
         <div className="">
-            <div className="test">
-                <button
-                    className="btn btn-dark text-light button-rounded dropdown-toggle"
-                    data-bs-toggle="dropdown"
-                    aria-expanded="false"
-                >Test Dropdown</button>
-                <ul className="dropdown-menu">
-                    <li className="dropdown-item">
-                        <button className="btn btn-dark button-rounded">Title</button>
-                    </li>
-                </ul>
-            </div>
-
-            <div className="row mx-auto mt-3 d-flex justify-content-center">
+            {/* <div className="row mx-auto mt-3 d-flex justify-content-center">
                 <div className="col-9" style={{ color: 'white' }}>
                     <div className="row">
                         <div className="col-lg-4 col-md-6 text-center align-items-center">
@@ -197,11 +184,11 @@ export const Display = () => {
                         <input type='text' aria-label='Search' placeholder="Search..." value={inputValue} onChange={(e) => { setInputValue(e.target.value) }} className=' w-25 form-control' />
                     </div>
                 </div>
-            </form>}
+            </form>} */}
             <div className="row mx-auto mt-3 d-flex justify-content-center">
                 <div className="col-9">
                     <div className="row">
-                        <div className="col-lg-4 col-md-6 text-center align-items-center">
+                        <div className="col-lg-3 col-md-6 text-center align-items-center">
                             <button className="btn btn-dark button-rounded text-light dropdown-toggle" style={{ cursor: "pointer", textDecoration: "none" }} data-bs-toggle="dropdown" aria-expanded="false">
                                 Sort By: {selectValue != "relevance" ? categoryValue : "Relevance"}
                             </button>
@@ -213,7 +200,7 @@ export const Display = () => {
                                 <li><button className="dropdown-item text-light" onClick={() => { setSelectValue("release-date"); setCategoryValue("Release Date") }}>Release Date</button></li>
                             </ul>
                         </div>
-                        <div className="col-lg-4 col-md-6 text-center align-items-center">
+                        <div className="col-lg-3 col-md-6 text-center align-items-center">
                             <button className="button-rounded btn btn-dark text-light dropdown-toggle" style={{ cursor: "pointer", textDecoration: "none" }} data-bs-toggle="dropdown" aria-expanded="false">
                                 Platform: {selectPlatValue != "all" ? platformValue : "All"}
                             </button>
@@ -224,7 +211,7 @@ export const Display = () => {
                                 <li><button className="dropdown-item text-light" onClick={() => { setSelectPlatValue("pc"); setPlatformValue("PC") }}><i className="fa-brands fa-windows"></i> PC</button></li>
                             </ul>
                         </div>
-                        <div className="col-lg-4 col-md-6 text-center align-items-center">
+                        <div className="col-lg-3 col-md-6 text-center align-items-center">
                             <button className="button-rounded btn btn-dark text-light dropdown-toggle" style={{ cursor: "pointer", textDecoration: "none" }} data-bs-toggle="dropdown" aria-expanded="false">
                                 Genre/Tag: {genreValue}
                             </button>
@@ -233,6 +220,34 @@ export const Display = () => {
                                 {genre.map((genre, ind) => {
                                     return <li key={ind}><button className="dropdown-item text-light" onClick={() => { setSelectGenreValue(genre); setGenreValue(genre) }}>{genre}</button></li>
                                 })}
+                            </ul>
+                        </div>
+                        <div className="col-lg-3 col-md-6 text-center align-items-center">
+                            <button
+                                className="btn btn-dark text-light button-rounded dropdown-toggle"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false"
+                            >Search...</button>
+                            <ul className="dropdown-menu bg-dark">
+                                <li className="dropdown-item">
+                                    <label htmlFor="searchRadio1" className="sr-only">Title</label>
+                                    <input type="radio" name="searchRadio" id="searchRadio1" className="btn btn-dark button-rounded" onClick={() => handleType('title')} />
+                                    <label htmlFor="searchRadio1" className="text-light">Title</label>
+                                </li>
+                                <li className="dropdown-item">
+                                    <label htmlFor="searchRadio2" className="sr-only">Developer</label>
+                                    <input type="radio" name="searchRadio" id="searchRadio2" className="btn btn-dark button-rounded" onClick={() => handleType('dev')} />
+                                    <label htmlFor="searchRadio2" className="text-light">Developer</label>
+                                </li>
+                                <li className="dropdown-item">
+                                    <label htmlFor="searchRadio3" className="sr-only">Publisher</label>
+                                    <input type="radio" name="searchRadio" id="searchRadio3" className="btn btn-dark button-rounded" onClick={() => handleType('pub')} />
+                                    <label htmlFor="searchRadio3" className="text-light">Publisher</label>
+                                </li>
+                                {type !== null && <li className="dropdown-item">
+                                    <label htmlFor="searchText" className="sr-only">Search</label>
+                                    <input type="text" name="searchText" id="searchText" className="bg-light" aria-label='Search' placeholder="Search..." value={inputValue} onChange={(e) => { setInputValue(e.target.value) }} />
+                                </li>}
                             </ul>
                         </div>
                     </div>

@@ -6,7 +6,6 @@ import { array } from "prop-types";
 export const Home = () => {
 	const { store, actions } = useContext(Context);
 
-
 	return (
 		<div className="text-center d-flex justify-content-center mt-5 row mx-0" style={{ height: '80vh' }}>
 			<div className="col-6">
