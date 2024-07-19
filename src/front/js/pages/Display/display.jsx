@@ -268,8 +268,11 @@ export const Display = () => {
                                                 <p className="card-text scroll">{data.short_description}</p>
                                             </div>
                                             <div className="card-footer d-flex justify-content-between align-items-center">
-                                                <span className="badge rounded-pill bg-secondary text-light m-0">{data.genre}</span>
-                                                <span className="text-light m-0">{(data.platform == 'PC (Windows)') ? <i className="fa-brands fa-windows"></i> : <i className="fa-regular fa-window-maximize"></i>}</span>
+                                                <span className="text-light m-0">{(data.platform == 'PC (Windows)') ? <i className="fa-brands fa-lg fa-windows"></i> : <i className="fa-regular fa-lg fa-window-maximize"></i>}</span>
+                                                <span className="badge rounded-pill bg-secondary text-light m-0 ms-3">{data.genre}</span>
+                                                <div className="ms-auto">
+                                                    <button className="text-light m-0 bg-transparent border-0"><i className="far fa-star fa-lg"></i></button>
+                                                </div>
                                             </div>
                                         </div>
                                     </Link>

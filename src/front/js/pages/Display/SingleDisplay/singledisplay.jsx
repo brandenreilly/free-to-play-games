@@ -143,7 +143,7 @@ export const SingleDisplay = () => {
                             <ol className="breadcrumb">
                                 <li className="breadcrumb-item"><a href="/" style={{ textDecoration: 'none', color: 'white' }}>Home</a></li>
                                 <li className="breadcrumb-item"><a href="/games" style={{ textDecoration: 'none', color: 'white' }}>Games List</a></li>
-                                <li className="breadcrumb-item active" aria-current="page">{gameDetails.title}</li>
+                                <li className="breadcrumb-item" aria-current="page">{gameDetails.title}</li>
                             </ol>
                         </div>
                     </div>

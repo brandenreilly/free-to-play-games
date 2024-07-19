@@ -57,7 +57,6 @@ const Layout = () => {
                         <Route element={<SearchPage />} path="/search/" />
                         <Route element={<SearchPage />} path="/search/:type" />
                         <Route element={<CreateAccount />} path="/signup" />
-                        {/* <Route element={<ProfilePage />} path="/profile"></Route> */}
                         <Route element={<h1>Not found!</h1>} />
                         <Route element={<PrivateRoutes />}>
                             <Route path='/profile' element={<ProfilePage />} />
