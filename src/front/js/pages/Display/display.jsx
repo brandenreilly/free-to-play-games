@@ -2,6 +2,8 @@ import React, { useContext, useState, useEffect } from "react";
 import { Context } from "../../store/appContext";
 import "../Display/display.css"
 import { Link, useNavigate } from "react-router-dom";
+import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
 
 export const Display = () => {
     const { store, actions } = useContext(Context)
@@ -15,6 +17,7 @@ export const Display = () => {
     const [platformValue, setPlatformValue] = useState("All")
     const [selectGenreValue, setSelectGenreValue] = useState("placeholder")
     const [genreValue, setGenreValue] = useState("All")
+    const [show, setShow] = useState(false);
     const navigate = useNavigate()
     const genre = ["All", "mmorpg", "shooter", "strategy", "moba", "racing", "sports", "social", "sandbox", "open-world", "survival", "pvp", "pve", "pixel", "voxel", "zombie", "turn-based", "first-person", "third-Person", "top-down", "tank", "space", "sailing", "side-scroller", "superhero", "permadeath", "card", "battle-royale", "mmo", "mmofps", "mmotps", "3d", "2d", "anime", "fantasy", "sci-fi", "fighting", "action-rpg", "action", "military", "martial-arts", "flight", "low-spec", "tower-defense", "horror", "mmorts"]
 
@@ -40,6 +43,20 @@ export const Display = () => {
     useEffect(() => {     // Happens when the Variable "genreValue" updates.
         handleSortByGenre(selectGenreValue)
     }, [genreValue])
+
+    /* useEffect(() => {
+        document.querySelector('#searchDropdown').addEventListener('click', function (event) {
+            event.preventDefault()
+        });
+        return () => {
+            document.querySelector('#searchDropdown').removeEventListener('click', function (event) {
+                event.preventDefault()
+            })
+        }
+    }, []) */
+
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
 
     const handleSearch = (type) => {
         if (inputValue.length > 1) {
@@ -225,10 +242,11 @@ export const Display = () => {
                         <div className="col-lg-3 col-md-6 text-center align-items-center">
                             <button
                                 className="btn btn-dark text-light button-rounded dropdown-toggle"
+                                onClick={handleShow}
                                 data-bs-toggle="dropdown"
                                 aria-expanded="false"
                             >Search...</button>
-                            <ul className="dropdown-menu bg-dark">
+                            <ul className="dropdown-menu bg-dark" id="searchDropdown">
                                 <li className="dropdown-item">
                                     <label htmlFor="searchRadio1" className="sr-only">Title</label>
                                     <input type="radio" name="searchRadio" id="searchRadio1" className="btn btn-dark button-rounded" onClick={() => handleType('title')} />
@@ -261,7 +279,7 @@ export const Display = () => {
                             return (
                                 <div className="card-shadow col-lg-3 col-md-6 col-xs-1 d-flex justify-content-center mx-0 mb-3 p-0 overflow-auto" key={ind}>
                                     <Link to={`/game/${data.id}`} state={data} style={{ textDecoration: 'none' }}>
-                                        <div className="card card-styling h-100" style={{ width: "17rem" }}>
+                                        <div className="card card-styling h-100" style={{ width: "18rem" }}>
                                             <img src={data.thumbnail} className="card-img-top" alt={data.title} />
                                             <div className="card-body">
                                                 <h5 className="card-title">{data.title}</h5>

@@ -11,6 +11,10 @@ const getState = ({ getStore, getActions, setStore }) => {
 				getActions().changeColor(0, "green");
 			},
 
+			fakeLogin: () => {
+				setStore({ user: { user: 'admin', id: '1' } })
+			},
+
 			handleGetGames: () => {
 				const url = 'https://free-to-play-games-database.p.rapidapi.com/api/games';
 				const options = {

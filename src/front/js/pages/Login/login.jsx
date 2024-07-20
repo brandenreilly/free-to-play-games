@@ -41,7 +41,7 @@ export const Login = () => {
                         </div>
                         <div className="row mt-3">
                             <div className="col-12 d-flex justify-content-center align-items-center mb-5">
-                                <button type="button" className="btn btn-light loginFormButton" onClick={() => { actions.handleLogIn(usernameInput, passwordInput); handleResetFields() }}>Login</button>
+                                <button type="button" className="btn btn-light loginFormButton" onClick={() => { actions.fakeLogin()/* actions.handleLogIn(usernameInput, passwordInput); handleResetFields() */ }}>Login</button>
                             </div>
                         </div>
                     </form>

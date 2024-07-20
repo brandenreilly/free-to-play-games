@@ -4,6 +4,10 @@
     }
   }
 
+.my-modal .modal-content {
+    background-color: rgb(21 23 28);
+}
+
 .filterContainer {
     background-color: rgba(35, 37, 46, 0.9);
     border-radius: 40px;
