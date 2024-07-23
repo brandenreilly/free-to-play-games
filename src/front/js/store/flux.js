@@ -145,6 +145,20 @@ const getState = ({ getStore, getActions, setStore }) => {
 					})
 			},
 
+			getUserData: () => {
+				let token = sessionStorage.getItem("token")
+				const url = 'api/token'
+				const opts = {
+					method: 'GET',
+					headers: {
+						Authorization: `Bearer ${token}`
+					}
+				}
+				fetch(process.env.BACKEND_URL + url, opts)
+					.then(resp => resp.json())
+					.then(data => console.log(data))
+			},
+
 			getMessage: async () => {
 				try {
 					// fetching data from the backend

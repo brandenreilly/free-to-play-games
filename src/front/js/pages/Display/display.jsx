@@ -279,7 +279,7 @@ export const Display = () => {
                             return (
                                 <div className="card-shadow col-lg-3 col-md-6 col-xs-1 d-flex justify-content-center mx-0 mb-3 p-0 overflow-auto" key={ind}>
                                     <Link to={`/game/${data.id}`} state={data} style={{ textDecoration: 'none' }}>
-                                        <div className="card card-styling h-100" style={{ width: "18rem" }}>
+                                        <div className="card card-styling h-100" style={{ width: "17rem" }}>
                                             <img src={data.thumbnail} className="card-img-top" alt={data.title} />
                                             <div className="card-body">
                                                 <h5 className="card-title">{data.title}</h5>

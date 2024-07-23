@@ -8,6 +8,7 @@ from flask_cors import CORS
 from flask_jwt_extended import create_access_token
 from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
+import json
 
 api = Blueprint('api', __name__)
 
@@ -23,6 +24,18 @@ def handle_hello():
     }
 
     return jsonify(response_body), 200
+
+@api.route('/users', methods=['GET'])
+def handle_users():
+    my_list = []
+    users = User.query.all()
+    for item in users:
+        new_item = item.serialize()
+        my_list.append(new_item)        
+    dump = json.dumps(my_list)
+    load = json.loads(dump)
+    
+    return jsonify(users = load), 200
 
 @api.route('/login', methods=['POST'])
 def handle_login():
