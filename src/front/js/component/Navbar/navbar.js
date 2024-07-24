@@ -20,7 +20,7 @@ export const Navbar = () => {
 					<ul className="navbar-nav mb-2 mb-lg-0">
 						{/* Items to put in Navbar goes here. */}
 					</ul>
-					{store.user !== null && <Link to={'/profile'} style={{ marginLeft: 'auto' }}>
+					{store.user !== null && store.user !== undefined && <Link to={'/profile'} style={{ marginLeft: 'auto' }}>
 						<button className="btn text-light"><i className="fas fa-user-circle me-1"></i>Profile</button>
 					</Link>}
 					<Link to={'/games'} style={{ marginLeft: store.user ? '2%' : 'auto' }}>

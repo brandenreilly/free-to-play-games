@@ -51,7 +51,7 @@ def handle_login():
         else:
             return jsonify({"msg": "Incorrect login information."}), 401
     else:
-        return jsonify({"msg": "No account with matching username found, try creating an account."}), 
+        return jsonify({"msg": "No account with matching username found, try creating an account."}), 401
 
 @api.route('/create', methods=['POST'])
 def handle_create_user():
@@ -93,6 +93,18 @@ def handle_update_user():
     find_user = User.query.filter_by(username=current_user).first()
     if(find_user):
         find_user.password = password
+        db.session.commit()
+        return jsonify({"msg": "Updated Successfully"}), 201
+    
+@api.route('/update/bio', methods=['PATCH'])
+@jwt_required()
+def handle_update_bio():
+    current_user = get_jwt_identity()
+    sent_info = request.json
+    bio = sent_info['bio']
+    find_user = User.query.filter_by(username=current_user).first()
+    if find_user:
+        find_user.bio = bio
         db.session.commit()
         return jsonify({"msg": "Updated Successfully"}), 201
 

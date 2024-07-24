@@ -11,9 +11,7 @@ export function ProfilePage() {
     const [token, setToken] = useState(null)
     const [userData, setUserData] = useState(undefined)
     const [show, setShow] = useState(false);
-
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
+    const backend = process.env.BACKEND_URL
 
     useEffect(() => {
         if (token != null) return;
@@ -26,6 +24,10 @@ export function ProfilePage() {
             if (token !== null) getUserData()
         }
     }, [token])
+
+    const handleClose = () => setShow(false);
+
+    const handleShow = () => setShow(true);
 
     function getToken() {
         let token = sessionStorage.getItem('token')
@@ -40,9 +42,24 @@ export function ProfilePage() {
                 Authorization: `Bearer ${token}`
             }
         }
-        fetch(process.env.BACKEND_URL + url, opts)
+        fetch(backend + url, opts)
             .then(resp => resp.json())
             .then(data => setUserData(data))
+    }
+
+    function sendUpdateBio() {
+        const url = 'api/update/bio'
+        const opts = {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ "bio": textAreaInput })
+        }
+        fetch(backend + url, opts)
+            .then(resp => resp.json())
+            .then(data => actions.setMessage(data))
     }
 
 
@@ -76,7 +93,7 @@ export function ProfilePage() {
                     <Button variant="secondary" onClick={handleClose}>
                         Close
                     </Button>
-                    <Button variant="primary" onClick={handleClose}>
+                    <Button variant="primary" onClick={() => { sendUpdateBio(); handleClose() }}>
                         Save Changes
                     </Button>
                 </Modal.Footer>

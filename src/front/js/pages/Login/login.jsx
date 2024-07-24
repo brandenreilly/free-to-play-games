@@ -3,16 +3,58 @@ import "../Login/login.css"
 
 
 import { Context } from "../../store/appContext";
+import { useNavigate } from "react-router-dom";
 
 
 export const Login = () => {
     const { store, actions } = useContext(Context)
     const [usernameInput, setUsernameInput] = useState("")
     const [passwordInput, setPasswordInput] = useState("")
+    const [userLoggedIn, setUserLoggedIn] = useState(false)
+    const user = store.user
+    const err = store.error
+    const navigate = useNavigate()
+
+    useEffect(() => {
+        if (!user) {
+            return
+        }
+        else {
+            navigate('/')
+        }
+    }, [user])
+
+    useEffect(() => {
+        if (!err) {
+            return
+        }
+        else {
+            alert(err)
+        }
+    }, [err])
 
     const handleResetFields = () => {
         setUsernameInput("")
         setPasswordInput("")
+    }
+
+    function handleClick() {
+        if (usernameInput !== "" && passwordInput !== "") {
+            actions.handleLogin(usernameInput, passwordInput);
+            handleResetFields();
+        }
+    }
+
+    function handleEnter(e) {
+        if (e.key === "Enter") {
+            if (usernameInput !== "" && passwordInput !== "") {
+                actions.handleLogin(usernameInput, passwordInput);
+                handleResetFields();
+            }
+        }
+        else {
+            return
+        }
     }
 
     return (
@@ -29,19 +71,19 @@ export const Login = () => {
                             <div className="col-12 d-flex justify-content-center align-items-center">
                                 <label htmlFor="usernameInput" className=""><i className="fa-solid fa-user" style={{ fontSize: "30px" }}></i></label>
                                 <label htmlFor="usernameInput" className="sr-only">Username</label>
-                                <input placeholder="Username" className="mx-2 loginInput" id="usernameInput" type="text" style={{ fontSize: "18px" }} value={usernameInput} onChange={(e) => { setUsernameInput(e.target.value) }}></input>
+                                <input placeholder="Username" className="mx-2 loginInput" id="usernameInput" type="text" style={{ fontSize: "18px" }} value={usernameInput} onChange={(e) => { setUsernameInput(e.target.value) }} onKeyDown={(e) => { handleEnter(e) }}></input>
                             </div>
                         </div>
                         <div className="row mt-2">
                             <div className="col-12 d-flex justify-content-center align-items-center">
                                 <label htmlFor="passwordInput"><i className="fa-solid fa-lock" style={{ fontSize: "30px" }}></i></label>
                                 <label htmlFor="passwordInput" className="sr-only">Password</label>
-                                <input placeholder="Password" className="mx-2 loginInput" id="passwordInput" style={{ fontSize: "18px" }} type="password" value={passwordInput} onChange={(e) => { setPasswordInput(e.target.value) }}></input>
+                                <input placeholder="Password" className="mx-2 loginInput" id="passwordInput" style={{ fontSize: "18px" }} type="password" value={passwordInput} onChange={(e) => { setPasswordInput(e.target.value) }} onKeyDown={(e) => { handleEnter(e) }}></input>
                             </div>
                         </div>
                         <div className="row mt-3">
                             <div className="col-12 d-flex justify-content-center align-items-center mb-5">
-                                <button type="button" className="btn btn-light loginFormButton" onClick={() => { actions.handleLogIn(usernameInput, passwordInput); handleResetFields() }}>Login</button>
+                                <button type="button" className="btn btn-light loginFormButton" onClick={handleClick}>Login</button>
                             </div>
                         </div>
                     </form>

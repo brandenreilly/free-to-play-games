@@ -3,6 +3,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 		store: {
 			message: null,
 			user: null,
+			error: null,
 			games: [],
 		},
 		actions: {
@@ -118,7 +119,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 				else { }
 			},
-			handleLogIn: (usernameInput, passwordInput) => {
+			handleLogin: (usernameInput, passwordInput) => {
 				const opts = {
 					method: 'POST',
 					headers: {
@@ -136,7 +137,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 							return resp.json()
 						}
 						else {
-							alert("Incorrect Username or Password.")
+							setStore({ error: 'Username or Password is incorrect.' })
 						}
 					})
 					.then(data => {
@@ -184,7 +185,10 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 				//reset the global store
 				setStore({ demo: demo });
-			}
+			},
+			setMessage: (msg) => {
+				setStore({ message: msg })
+			},
 		}
 	};
 };
