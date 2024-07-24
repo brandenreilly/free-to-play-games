@@ -108,6 +108,17 @@ def handle_update_bio():
         db.session.commit()
         return jsonify({"msg": "Updated Successfully"}), 201
 
+@api.route('/update/picture', methods=['PATCH'])
+@jwt_required()
+def handle_update_pic():
+    current_user = get_jwt_identity()
+    img = request.form.get('img')
+    find_user = User.query.filter_by(username=current_user).first()
+    if find_user:
+        find_user.profile_pic = img
+        db.session.commit()
+        return jsonify(img)
+
 @api.route('/token', methods=['GET'])
 @jwt_required()
 def handle_token():

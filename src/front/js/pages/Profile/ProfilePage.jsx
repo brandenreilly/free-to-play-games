@@ -11,7 +11,9 @@ export function ProfilePage() {
     const [token, setToken] = useState(null)
     const [userData, setUserData] = useState(undefined)
     const [show, setShow] = useState(false);
+    const [profPic, setProfPic] = useState(null)
     const backend = process.env.BACKEND_URL
+    const selectedFile = document.getElementById("profPic")
 
     useEffect(() => {
         if (token != null) return;
@@ -28,6 +30,34 @@ export function ProfilePage() {
     const handleClose = () => setShow(false);
 
     const handleShow = () => setShow(true);
+
+    async function handleSubmit() {
+        if (show) {
+            const uploadForm = document.getElementById('profPicUpload')
+            uploadForm.addEventListener('submit', function (e) {
+                e.preventDefault()
+                let file = e.target.profPic.files
+                let formData = new FormData()
+                formData.append('file', file)
+                formData.append('img', profPic)
+                sendData(formData)
+            })
+        }
+    }
+
+    async function sendData(data) {
+        let url = 'api/update/picture'
+        let opts = {
+            method: 'PATCH',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            },
+            body: data
+        }
+        fetch(backend + url, opts)
+            .then(resp => resp.json())
+            .then(data => console.log(data))
+    }
 
     function getToken() {
         let token = sessionStorage.getItem('token')
@@ -48,20 +78,24 @@ export function ProfilePage() {
     }
 
     function sendUpdateBio() {
-        const url = 'api/update/bio'
-        const opts = {
-            method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify({ "bio": textAreaInput })
+        if (textAreaInput !== "") {
+            const url = 'api/update/bio'
+            const opts = {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ "bio": textAreaInput })
+            }
+            fetch(backend + url, opts)
+                .then(resp => resp.json())
+                .then(data => actions.setMessage(data))
         }
-        fetch(backend + url, opts)
-            .then(resp => resp.json())
-            .then(data => actions.setMessage(data))
+        else {
+            alert("Please fill out the Bio field.")
+        }
     }
-
 
     return (
         <>
@@ -79,15 +113,39 @@ export function ProfilePage() {
                             </div>
                         </div>
                     </div>
-                    <div className="col-2"></div>
+                    <div className="col-2"><button className="border-0 bg-transparent" onClick={handleShow}><i className="fas fa-user-edit fa-lg text-white"></i></button></div>
                 </div>
             </div>
-            <Modal show={show} onHide={handleClose}>
+            <Modal show={show} onHide={handleClose} size="lg">
                 <Modal.Header closeButton>
-                    <Modal.Title>Update Info</Modal.Title>
+                    <Modal.Title>Update Profile Information:</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <textarea value={textAreaInput} onChange={(e) => setTextAreaInput(e.target.value)} placeholder="Update..." />
+                    <form id="profPicUpload">
+                        <div className="row">
+                            <div className="col-12">
+                                <label htmlFor="profPic">Upload Profile Picture:</label>
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className="col-12">
+                                <input type="file" name="profPic" id="profPic" accept="image/png, image/jpeg" onChange={(e) => { setProfPic(e.target.value) }}></input>
+                            </div>
+                            <div className="col-12">
+                                <button className="btn btn-dark" type="submit" id="submitBtn" onClick={handleSubmit}>Upload Photo</button>
+                            </div>
+                        </div>
+                    </form>
+                    <div className="row">
+                        <div className="col-12">
+                            <label htmlFor="updateBio">Update Bio:</label>
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="col-12">
+                            <textarea id="updateBio" value={textAreaInput} onChange={(e) => setTextAreaInput(e.target.value)} placeholder="Update..." />
+                        </div>
+                    </div>
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={handleClose}>
