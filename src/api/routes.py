@@ -2,7 +2,7 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, User
+from api.models import db, User, Photo
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from flask_jwt_extended import create_access_token
@@ -108,16 +108,20 @@ def handle_update_bio():
         db.session.commit()
         return jsonify({"msg": "Updated Successfully"}), 201
 
-@api.route('/update/picture', methods=['PATCH'])
-@jwt_required()
+@api.route('/update/picture', methods=['POST'])
 def handle_update_pic():
-    current_user = get_jwt_identity()
-    img = request.form.get('img')
-    find_user = User.query.filter_by(username=current_user).first()
-    if find_user:
-        find_user.profile_pic = img
-        db.session.commit()
-        return jsonify(img)
+    photo = request.files['photo']
+    new_photo = Photo(data=photo.read())
+    db.session.add(new_photo)
+    db.session.commit()
+    return 'Photo uploaded successfully'
+
+@api.route('/get-photo/<int:photo_id>', methods=['GET'])
+def get_photo(photo_id):
+    photo = Photo.query.get(photo_id)
+    if not photo:
+        return jsonify({'error': 'Photo not found'}), 404
+    return jsonify({'photo_data': photo.data.decode('latin1')})
 
 @api.route('/token', methods=['GET'])
 @jwt_required()

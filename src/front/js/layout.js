@@ -17,6 +17,7 @@ import injectContext from "./store/appContext";
 
 import { Navbar } from "./component/Navbar/navbar.js";
 import { ProfilePage } from "./pages/Profile/ProfilePage.jsx";
+import PhotoDisplay from "./pages/Profile/imageTest.jsx";
 
 const PrivateRoutes = () => {
     let token = sessionStorage.getItem('token')
@@ -57,6 +58,7 @@ const Layout = () => {
                         <Route element={<SearchPage />} path="/search/" />
                         <Route element={<SearchPage />} path="/search/:type" />
                         <Route element={<CreateAccount />} path="/signup" />
+                        <Route element={<PhotoDisplay />} path="/photodisplay" />
                         <Route element={<h1>Not found!</h1>} />
                         <Route element={<PrivateRoutes />}>
                             <Route path='/profile' element={<ProfilePage />} />

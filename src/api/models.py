@@ -29,6 +29,10 @@ class User(db.Model):
             # do not serialize the password, its a security breach
         }
     
+class Photo(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    data = db.Column(db.LargeBinary)
+    
 class Favorites(db.Model):
     id = db.Column(db.Integer, primary_key=True)
 

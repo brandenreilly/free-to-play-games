@@ -12,6 +12,8 @@ export function ProfilePage() {
     const [userData, setUserData] = useState(undefined)
     const [show, setShow] = useState(false);
     const [profPic, setProfPic] = useState(null)
+    const [photoFile, setPhotoFile] = useState(null)
+    const [photoData, setPhotoData] = useState(null)
     const backend = process.env.BACKEND_URL
     const selectedFile = document.getElementById("profPic")
 
@@ -27,23 +29,60 @@ export function ProfilePage() {
         }
     }, [token])
 
+    useEffect(() => {
+        const fetchPhoto = async () => {
+            try {
+                const response = await fetch(backend + 'api/get-photo/1');
+                const data = await response.json();
+                setPhotoData(data.photo_data)
+            } catch (error) {
+                console.error('Error fetching photo', error)
+            }
+        }
+
+        fetchPhoto()
+    }, [])
+
     const handleClose = () => setShow(false);
 
     const handleShow = () => setShow(true);
 
-    async function handleSubmit() {
+    const handleFileChange = (event) => {
+        const file = event.target.files[0];
+        setPhotoFile(file); // Assuming you have a state variable to store the file
+    };
+
+    /* async function handleSubmit() {
         if (show) {
             const uploadForm = document.getElementById('profPicUpload')
             uploadForm.addEventListener('submit', function (e) {
                 e.preventDefault()
-                let file = e.target.profPic.files
+                let file = e.target.profPic.files[0]
                 let formData = new FormData()
                 formData.append('file', file)
                 formData.append('img', profPic)
                 sendData(formData)
             })
         }
-    }
+    } */
+
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+
+        const formData = new FormData();
+        formData.append('photo', photoFile); // 'photo' should match the name used in Flask
+
+        // Example of sending the FormData to a backend API
+        try {
+            await fetch(backend + 'api/update/picture', {
+                method: 'POST',
+                body: formData
+            });
+            alert('Photo uploaded successfully');
+        } catch (error) {
+            console.error('Error uploading photo:', error);
+        }
+    };
 
     async function sendData(data) {
         let url = 'api/update/picture'
@@ -106,6 +145,9 @@ export function ProfilePage() {
                         <div className="row">
                             <div className="col-6" style={{ height: '250px', width: '250px' }}>
                                 <img className="rounded-circle h-100 w-100" src={userData != undefined ? userData.user.profile_pic ? userData.user.profile_pic : 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' : 'Loading...'} />
+                                {photoData && (
+                                    console.log('photoData', photoData)
+                                )}
                             </div>
                             <div className="col-6">
                                 <h6 className="text-light">{userData != undefined ? userData.user.username : 'Loading...'}</h6>
@@ -129,7 +171,7 @@ export function ProfilePage() {
                         </div>
                         <div className="row">
                             <div className="col-12">
-                                <input type="file" name="profPic" id="profPic" accept="image/png, image/jpeg" onChange={(e) => { setProfPic(e.target.value) }}></input>
+                                <input type="file" name="profPic" id="profPic" accept="image/png, image/jpeg" onChange={handleFileChange} />
                             </div>
                             <div className="col-12">
                                 <button className="btn btn-dark" type="submit" id="submitBtn" onClick={handleSubmit}>Upload Photo</button>
