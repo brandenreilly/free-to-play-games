@@ -108,13 +108,17 @@ def handle_update_bio():
         db.session.commit()
         return jsonify({"msg": "Updated Successfully"}), 201
 
-@api.route('/update/picture', methods=['POST'])
+@api.route('/update/avatar', methods=['PATCH'])
+@jwt_required()
 def handle_update_pic():
-    photo = request.files['photo']
-    new_photo = Photo(data=photo.read())
-    db.session.add(new_photo)
-    db.session.commit()
-    return 'Photo uploaded successfully'
+    current_user = get_jwt_identity()
+    sent_info = request.json
+    pic_id = sent_info['profile_pic']
+    find_user = User.query.filter_by(username=current_user).first()
+    if find_user:
+        find_user.profile_pic = pic_id
+        db.session.commit()
+        return jsonify({"msg": "Updated Successfully"}), 201
 
 @api.route('/get-photo/<int:photo_id>', methods=['GET'])
 def get_photo(photo_id):

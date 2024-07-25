@@ -5,17 +5,10 @@ const getState = ({ getStore, getActions, setStore }) => {
 			user: null,
 			error: null,
 			games: [],
+			watchList: [],
 		},
 		actions: {
 			// Use getActions to call a function within a fuction
-			exampleFunction: () => {
-				getActions().changeColor(0, "green");
-			},
-
-			fakeLogin: () => {
-				setStore({ user: { user: 'admin', id: '1' } })
-			},
-
 			handleGetGames: () => {
 				const url = 'https://free-to-play-games-database.p.rapidapi.com/api/games';
 				const options = {
@@ -109,10 +102,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 					fetch(process.env.BACKEND_URL + 'api/token', opts)
 						.then(resp => {
 							if (resp.ok) {
+								setStore({ error: '' })
 								return resp.json()
 							}
 							else {
-								return alert("Invalid token. Please log in again.")
+								return setStore({ error: 'Invalid Token' })
 							}
 						})
 						.then(data => setStore({ user: data }))
@@ -160,34 +154,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 					.then(data => console.log(data))
 			},
 
-			getMessage: async () => {
-				try {
-					// fetching data from the backend
-					const resp = await fetch(process.env.BACKEND_URL + " api/hello")
-					const data = await resp.json()
-					setStore({ message: data.message })
-					// don't forget to return something, that is how the async resolves
-					return data;
-				} catch (error) {
-					console.log("Error loading message from backend", error)
-				}
-			},
-			changeColor: (index, color) => {
-				//get the store
-				const store = getStore();
-
-				//we have to loop the entire demo array to look for the respective index
-				//and change its color
-				const demo = store.demo.map((elm, i) => {
-					if (i === index) elm.background = color;
-					return elm;
-				});
-
-				//reset the global store
-				setStore({ demo: demo });
-			},
 			setMessage: (msg) => {
 				setStore({ message: msg })
+			},
+			setError: (err) => {
+				setStore({ error: err })
 			},
 		}
 	};

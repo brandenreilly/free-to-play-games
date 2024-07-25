@@ -29,7 +29,7 @@ export const Login = () => {
             return
         }
         else {
-            alert(err)
+            console.log(err)
         }
     }, [err])
 
@@ -41,6 +41,7 @@ export const Login = () => {
     function handleClick() {
         if (usernameInput !== "" && passwordInput !== "") {
             actions.handleLogin(usernameInput, passwordInput);
+            actions.setError('')
             handleResetFields();
         }
     }
@@ -49,6 +50,7 @@ export const Login = () => {
         if (e.key === "Enter") {
             if (usernameInput !== "" && passwordInput !== "") {
                 actions.handleLogin(usernameInput, passwordInput);
+                actions.setError('')
                 handleResetFields();
             }
         }
