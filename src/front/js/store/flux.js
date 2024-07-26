@@ -9,6 +9,42 @@ const getState = ({ getStore, getActions, setStore }) => {
 		},
 		actions: {
 			// Use getActions to call a function within a fuction
+			handleAddToWatch: (item) => {
+				const token = sessionStorage.getItem('token')
+				const backend = process.env.BACKEND_URL
+				const url = 'api/addfavorite'
+				const opts = {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						'Authorization': `Bearer ${token}`
+					},
+					body: JSON.stringify({
+						'game_id': item.id,
+						'title': item.title,
+						'pic': item.thumbnail,
+						'url': item.game_url,
+						'genre': item.genre,
+						'platform': item.platform,
+						'developer': item.developer,
+						'publisher': item.publisher,
+						'description': item.short_description,
+						'release_date': item.release_date
+					})
+				}
+				fetch(backend + url, opts)
+					.then(resp => resp.json())
+					.then(data => {
+						if (data.msg) {
+							setStore({ message: data.msg })
+						}
+						else {
+							setStore({ error: data.error })
+						}
+					})
+
+			},
+
 			handleGetGames: () => {
 				const url = 'https://free-to-play-games-database.p.rapidapi.com/api/games';
 				const options = {
@@ -138,6 +174,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 						setStore({ user: data })
 						sessionStorage.setItem("token", data.access_token)
 					})
+			},
+
+			handleLogOut: () => {
+				setStore({ user: undefined })
+				sessionStorage.removeItem('token')
 			},
 
 			getUserData: () => {

@@ -26,9 +26,16 @@ export const Navbar = () => {
 					<Link to={'/games'} style={{ marginLeft: store.user ? '2%' : 'auto' }}>
 						<button className="btn text-light"><i className="fas fa-book-open me-1"></i>Games</button>
 					</Link>
-					<Link to={'/login'} style={{ marginLeft: '2%' }}>
-						<button className="btn text-light"><i className="fas fa-sign-in-alt me-1"></i>Login</button>
-					</Link>
+					{!store.user
+						?
+						<Link to={'/login'} style={{ marginLeft: '2%' }}>
+							<button className="btn text-light"><i className="fas fa-sign-in-alt me-1"></i>Login</button>
+						</Link>
+						:
+						<Link to={'/'} style={{ marginLeft: '2%' }}>
+							<button className="btn text-light" onClick={actions.handleLogOut}><i className="fas fa-sign-out-alt me-1"></i>Logout</button>
+						</Link>
+					}
 				</div>
 			</div>
 		</nav>

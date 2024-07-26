@@ -156,6 +156,21 @@ export function ProfilePage() {
                     </div>
                     <div className="col-2"><button className="border-0 bg-transparent" onClick={handleShow}><i className="fas fa-user-edit fa-lg text-white"></i></button></div>
                 </div>
+                <div className="row d-flex justify-content-center">
+                    <div className="col-2"></div>
+                    <div className="col-8">
+                        <div className="row">
+                            {store.watchList.length !== 0 && store.watchList.map((item, index) => {
+                                return (
+                                    <div className="text-white" key={index}>
+                                        <h6 className="text-white"></h6>
+                                    </div>
+                                )
+                            })}
+                        </div>
+                    </div>
+                    <div className="col-2"></div>
+                </div>
             </div>
             <Modal
                 className="updateInfo text-white bg-dark"

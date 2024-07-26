@@ -277,7 +277,8 @@ export const Display = () => {
                         {games.length > 0 ? games.map((data, ind) => {
                             sessionStorage.setItem('arrValue', ind + 1)
                             return (
-                                <div className="card-shadow col-lg-3 col-md-6 col-xs-1 d-flex justify-content-center mx-0 mb-3 p-0 overflow-auto" key={ind}>
+                                <div className="card-shadow col-lg-3 col-md-6 col-xs-1 d-flex justify-content-center mx-0 mb-3 p-0 overflow-auto" style={{ position: 'relative' }} key={ind}>
+                                    <button className="text-light m-0 bg-transparent border-0 watchListBtn" onClick={() => { actions.handleAddToWatch(data) }}><i className="far fa-eye fa-lg"></i></button>
                                     <Link to={`/game/${data.id}`} state={data} style={{ textDecoration: 'none' }}>
                                         <div className="card card-styling h-100" style={{ width: "17rem" }}>
                                             <img src={data.thumbnail} className="card-img-top" alt={data.title} />
@@ -289,7 +290,7 @@ export const Display = () => {
                                                 <span className="text-light m-0">{(data.platform == 'PC (Windows)') ? <i className="fa-brands fa-lg fa-windows"></i> : <i className="fa-regular fa-lg fa-window-maximize"></i>}</span>
                                                 <span className="badge rounded-pill bg-secondary text-light m-0 ms-3">{data.genre}</span>
                                                 <div className="ms-auto">
-                                                    <button className="text-light m-0 bg-transparent border-0"><i className="far fa-star fa-lg"></i></button>
+                                                    {/* <button className="text-light m-0 bg-transparent border-0"><i className="far fa-star fa-lg"></i></button> */}
                                                 </div>
                                             </div>
                                         </div>

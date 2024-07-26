@@ -2,7 +2,7 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, User, Photo
+from api.models import db, User, Photo, Favorites
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from flask_jwt_extended import create_access_token
@@ -119,13 +119,53 @@ def handle_update_pic():
         find_user.profile_pic = pic_id
         db.session.commit()
         return jsonify({"msg": "Updated Successfully"}), 201
+    
+@api.route('/addfavorite', methods=['POST'])
+@jwt_required()
+def handle_add_favorite():
+    current_user = get_jwt_identity()
+    data = request.json
+    find_user = User.query.filter_by(username=current_user).first()
+    if find_user:
+        new_favorite = Favorites(uid=find_user.id,
+                                 game_id=data['game_id'],
+                                 title=data['title'],
+                                 pic=data['pic'],
+                                 url=data['url'],
+                                 genre=data['genre'],
+                                 platform=data['platform'],
+                                 developer=data['developer'],
+                                 publisher=data['publisher'],
+                                 description=data['description'],
+                                 release_date=data['release_date'])
+        db.session.add(new_favorite)
+        db.session.commit()
+        return jsonify({"msg": "Successfully added to list."}), 201
+    else: 
+        return jsonify({"error": "Unsuccessful"}) 
+    
+@api.route('/removefavorite/<id>', methods=['DELETE'])
+@jwt_required()
+def handle_delete_favorite(id):
+    current_user = get_jwt_identity()
+    find_user = User.query.filter_by(username=current_user).first()
+    if find_user:
+        to_delete = Favorites.query.filter_by(id=id, uid=find_user.id)
+        db.session.delete(to_delete)
+        db.session.commit()
+        return jsonify({"msg": "Deleted Successfully"}), 202
+    else: 
+        return jsonify({"error": "There was an error processing your request."})
 
-@api.route('/get-photo/<int:photo_id>', methods=['GET'])
-def get_photo(photo_id):
-    photo = Photo.query.get(photo_id)
-    if not photo:
-        return jsonify({'error': 'Photo not found'}), 404
-    return jsonify({'photo_data': photo.data.decode('latin1')})
+@api.route('/getfavorites', methods=['GET'])
+@jwt_required()
+def handle_get_favorites():
+    current_user = get_jwt_identity()
+    find_user = User.query.filter_by(username=current_user).first()
+    if find_user:
+        get_favs = Favorites.query.filter_by(uid=find_user.id).all()
+        serial = list(map(lambda x: x.serialize(), get_favs))
+        return jsonify({"favorites": serial})
 
 @api.route('/token', methods=['GET'])
 @jwt_required()

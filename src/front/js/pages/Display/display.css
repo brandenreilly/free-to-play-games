@@ -33,6 +33,13 @@
     box-shadow: rgba(255, 255, 255, 0.20) 0px 5px 15px; 
 }
 
+.watchListBtn {
+    position: absolute;
+    bottom: 7px;
+    right: 15px;
+    z-index: 2000;
+}
+
 /* width */
 ::-webkit-scrollbar {
     width: 10px;
