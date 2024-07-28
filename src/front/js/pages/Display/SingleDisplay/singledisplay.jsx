@@ -12,7 +12,7 @@ export const SingleDisplay = () => {
     const dialogRef = useRef()
 
     useEffect(() => {     // Happens once on page load.
-        getGameById(data.id)
+        getGameById(data)
         document.body.addEventListener('click', clickClose)
         console.log(window.location.pathname)
         return () => {

@@ -3,6 +3,30 @@
         display: none;
     }
   }
+@media (min-width: 2560px) {
+    .col-xxxl-2 {
+        display: flex;
+        flex-grow: 0;
+        flex-shrink: 0;
+        flex-basis: auto;
+        width: 20%;
+    }
+    .card {
+        width: 20rem !important;
+    }
+}
+@media (min-width: 3440px) {
+    .col-xxxxl-2 {
+        display: flex;
+        flex-grow: 0;
+        flex-shrink: 0;
+        flex-basis: auto;
+        width: 13%;
+    }
+    .card {
+        width: 20rem !important;
+    }
+}
 
 .my-modal .modal-content {
     background-color: rgb(21 23 28);
@@ -38,6 +62,10 @@
     bottom: 7px;
     right: 15px;
     z-index: 2000;
+}
+.favBTN:hover {
+    box-shadow: rgba(255, 255, 255, 0.20) 0px 5px 15px;
+    
 }
 
 /* width */

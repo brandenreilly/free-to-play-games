@@ -166,6 +166,19 @@ def handle_get_favorites():
         get_favs = Favorites.query.filter_by(uid=find_user.id).all()
         serial = list(map(lambda x: x.serialize(), get_favs))
         return jsonify({"favorites": serial})
+    
+@api.route('/getuser', methods=['GET'])
+@jwt_required()
+def handle_get_user_data():
+    current = get_jwt_identity()
+    find_user = User.query.filter_by(username=current).first()
+    if find_user:
+        user = find_user.serialize()
+        get_user_favs = Favorites.query.filter_by(uid=find_user.id).all()
+        list_favorites = list(map(lambda x: x.serialize(), get_user_favs))
+        return jsonify({"user": user, "favorites": list_favorites})
+    else:
+        return jsonify({"error": "Invalid Token"})
 
 @api.route('/token', methods=['GET'])
 @jwt_required()
