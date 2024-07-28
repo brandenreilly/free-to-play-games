@@ -6,13 +6,14 @@ export function CreateAccount() {
     const [passwordInput, setPasswordInput] = useState(null)
     const [emailInput, setEmailInput] = useState(null)
     const [msg, setMsg] = useState(undefined)
+    const backend = process.env.BACKEND_URL
 
     useEffect(() => {
         resetFields()
     }, [msg])
 
     function sendData() {
-        const url = 'https://super-duper-space-adventure-x55g9595w54j2ggq-3001.app.github.dev/api/create'
+        const url = 'api/create'
         const opts = {
             method: 'POST',
             headers: {
@@ -24,7 +25,7 @@ export function CreateAccount() {
                 password: passwordInput
             })
         }
-        fetch(url, opts)
+        fetch(backend + url, opts)
             .then(resp => resp.json())
             .then(data => setMsg(data))
     }
