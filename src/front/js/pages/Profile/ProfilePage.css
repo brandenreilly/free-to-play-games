@@ -1,3 +1,8 @@
 .updateInfo .modal-content {
     background-color: rgb(21 23 28);
   }
+
+  .socialIcon {
+    border-bottom: 1px solid rgba(255,255,255,0.4);
+    border-radius: 5px;
+  }
