@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import '../CreateAccount/CreateAccount.css'
+import { useNavigate } from "react-router-dom";
 
 export function CreateAccount() {
     const [usernameInput, setUsernameInput] = useState(null)
@@ -7,9 +8,15 @@ export function CreateAccount() {
     const [emailInput, setEmailInput] = useState(null)
     const [msg, setMsg] = useState(undefined)
     const backend = process.env.BACKEND_URL
+    const navigate = useNavigate()
 
     useEffect(() => {
-        resetFields()
+        if (msg?.completed === true) {
+            resetFields()
+            setTimeout(navigate('/login'), 3000)
+        }
+        else {
+        }
     }, [msg])
 
     function sendData() {

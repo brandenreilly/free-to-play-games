@@ -19,6 +19,7 @@ export function ProfilePage() {
     const [confirmShow, setConfirmShow] = useState(false)
     const [radioGroup, setRadioGroup] = useState(null)
     const [respMsg, setRespMsg] = useState(null)
+    const [TBD, setTBD] = useState(null)
     const navigate = useNavigate()
     const backend = process.env.BACKEND_URL
     const err = store.error
@@ -48,8 +49,8 @@ export function ProfilePage() {
     const handleShow = () => setShow(true);
     const handleClose = () => setShow(false);
 
-    const handleConfirmShow = () => setConfirmShow(true)
     const handleConfirmClose = () => setConfirmShow(false)
+    const handleConfirmShow = (id, index) => { setTBD({ id: id, ind: index }); setConfirmShow(true) }
 
     function getToken() {
         let token = sessionStorage.getItem('token')
@@ -147,18 +148,33 @@ export function ProfilePage() {
     }
 
     function handleConfirm() {
-        const url = 'api/removefavorite/id'
-        const opts = {
-            method: 'DELETE'
+        if (TBD !== null) {
+            const url = `api/removefavorite/${TBD.id}`
+            const opts = {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            }
+            fetch(backend + url, opts)
+                .then(resp => resp.json())
+                .then(data => {
+                    if (data?.msg === 'Deleted Successfully') {
+                        let newArr = userFavs.filter((item, ind) => { if (ind != TBD.ind) { return item } })
+                        setUserFavs(newArr)
+                        handleConfirmClose()
+                        setTBD(null)
+                    }
+                    else {
+                        alert('There was an error processing your request.')
+                    }
+                })
         }
-        fetch(backend + url, opts)
-            .then(resp => resp.json())
-            .then(data => console.log(data))
     }
 
     return (
         <>
-            <div className="container py-5">
+            <div className="container py-4 w-100">
                 <div className="row d-flex justify-content-center">
                     <div className="col-1"></div>
                     <div className="col-10">
@@ -175,15 +191,14 @@ export function ProfilePage() {
                     <div className="col-1"><button className="border-0 bg-transparent" onClick={handleShow}><i className="fas fa-user-edit fa-lg text-white"></i></button></div>
                 </div>
                 <div className="row d-flex justify-content-center">
-                    <div className="col-1"></div>
-                    <div className="col-10">
+                    <div className="col-12">
                         <div className="row d-flex justify-content-center text-center">
                             <h6 className="text-white mx-auto">{userData !== undefined ? userData.username : 'Loading...'}'s Favorites</h6>
                         </div>
                         <div className="row d-flex justify-content-center">
                             {userFavs.length !== 0 && userFavs.map((item, index) => {
                                 return (
-                                    <div className="mt-3 col-4 mx-auto" key={index}>
+                                    <div className="mt-3 col-xl-3 col-lg-4 col-md-6 col-sm-12 d-flex justify-content-center my-2 mx-auto" key={index}>
                                         <div className="card card-styling h-100" style={{ width: "18rem", backgroundColor: 'rgba(35, 37, 46, 0.9)' }}>
                                             <img src={item.pic} className="card-img-top" alt={item.title} />
                                             <div className="card-body">
@@ -194,7 +209,7 @@ export function ProfilePage() {
                                                 <Link to={`/game/${item.game_id}`} state={item.game_id} style={{ textDecoration: 'none' }}>
                                                     <button className="btn btn-secondary text-light">Click for more details.</button>
                                                 </Link>
-                                                <button class="btn btn-secondary" onClick={handleConfirmShow}>
+                                                <button class="btn btn-secondary" onClick={() => handleConfirmShow(item.id, index)}>
                                                     <i className="fas fa-trash text-danger fa-lg"></i>
                                                 </button>
                                             </div>
@@ -204,7 +219,6 @@ export function ProfilePage() {
                             })}
                         </div>
                     </div>
-                    <div className="col-1"></div>
                 </div>
             </div>
             <Modal
@@ -227,7 +241,7 @@ export function ProfilePage() {
                     <Button variant="secondary" onClick={handleConfirmClose}>
                         Cancel
                     </Button>
-                    <Button variant="danger" onClick={handleConfirmClose}>
+                    <Button variant="danger" onClick={handleConfirm}>
                         Confirm
                     </Button>
                 </Modal.Footer>
@@ -256,7 +270,7 @@ export function ProfilePage() {
                             <div className="row d-flex justify-content-center">
                                 {imageList.length != 0 && imageList.map((image, index) => {
                                     return (
-                                        <div className="col-3 text-center" style={{ height: '150px', width: '150px' }} key={index}>
+                                        <div className="col-lg-3 text-center" style={{ height: '150px', width: '150px' }} key={index}>
                                             <label htmlFor={`pfp-${index}`}><img className="h-75 w-75 rounded-circle" src={image.default} /></label>
                                             <input type="radio" checked={radioGroup == index} value={index} name="pfpRadioGroup" id={`pfp-${index}`} onChange={(e) => { setRadioGroup(e.target.value) }} />
                                         </div>

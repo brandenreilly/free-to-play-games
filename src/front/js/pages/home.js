@@ -2,6 +2,7 @@ import React, { useContext, useEffect } from "react";
 import { Context } from "../store/appContext";
 import "../../styles/home.css";
 import { array } from "prop-types";
+import { Link } from "react-router-dom";
 
 export const Home = () => {
 	const { store, actions } = useContext(Context);
@@ -17,7 +18,9 @@ export const Home = () => {
 				<div className="row h-50 d-flex justify-content-center align-items-start mt-5">
 					<div className="col-3"></div>
 					<div className="col-6 d-flex justify-content-center">
-						<button className="btn btn-light me-2">Create Account</button>
+						<Link to={'/signup'}>
+							<button className="btn btn-light me-2">Create Account</button>
+						</Link>
 						<button className="btn btn-light ms-2">Login</button>
 					</div>
 					<div className="col-3"></div>

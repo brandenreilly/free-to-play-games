@@ -122,7 +122,7 @@ export const SingleDisplay = () => {
     return (
         <div className="container mb-5">
             <div className="row mt-5">
-                <div className="col-4">
+                <div className="col-lg-4 col-sm-12">
                     <div className="sticky-top" style={{ top: '80px' }}>
                         <div className="row d-flex justify-content-center">
                             <img src={gameDetails.thumbnail} alt={gameDetails.title} className="" />
@@ -148,7 +148,7 @@ export const SingleDisplay = () => {
                         </div>
                     </div>
                     <div className="row">
-                        <div className="col-12">
+                        <div className="col-12 text-lg-start text-sm-center">
                             <h1 className="text-light">{gameDetails.title}</h1>
                         </div>
                     </div>

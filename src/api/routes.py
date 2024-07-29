@@ -127,7 +127,11 @@ def handle_add_favorite():
     data = request.json
     find_user = User.query.filter_by(username=current_user).first()
     if find_user:
-        new_favorite = Favorites(uid=find_user.id,
+        duplicate = Favorites.query.filter_by(game_id=data['game_id'], uid=find_user.id).first()
+        if duplicate:
+            return jsonify({"error": "Already favorited."})
+        else:
+            new_favorite = Favorites(uid=find_user.id,
                                  game_id=data['game_id'],
                                  title=data['title'],
                                  pic=data['pic'],
@@ -138,9 +142,9 @@ def handle_add_favorite():
                                  publisher=data['publisher'],
                                  description=data['description'],
                                  release_date=data['release_date'])
-        db.session.add(new_favorite)
-        db.session.commit()
-        return jsonify({"msg": "Successfully added to list."}), 201
+            db.session.add(new_favorite)
+            db.session.commit()
+            return jsonify({"msg": "Successfully added to list."}), 201
     else: 
         return jsonify({"error": "Unsuccessful"}) 
     
@@ -150,7 +154,7 @@ def handle_delete_favorite(id):
     current_user = get_jwt_identity()
     find_user = User.query.filter_by(username=current_user).first()
     if find_user:
-        to_delete = Favorites.query.filter_by(id=id, uid=find_user.id)
+        to_delete = Favorites.query.filter_by(id=id, uid=find_user.id).first()
         db.session.delete(to_delete)
         db.session.commit()
         return jsonify({"msg": "Deleted Successfully"}), 202
