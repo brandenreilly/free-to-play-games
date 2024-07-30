@@ -60,7 +60,7 @@ export const Login = () => {
     }
 
     return (
-        <div className="container mt-5 mx-auto" style={{ color: "white", height: "80vh" }}>
+        <div className="container mt-5 mx-auto mb-5" style={{ color: "white", height: "70vh" }}>
             <div className="mx-auto loginFormContainer" style={{ width: "470px" }}>
                 <div className="row mx-auto" style={{ height: "35%", width: "470px" }}>
                     <div className="col-12 text-center">
@@ -89,6 +89,28 @@ export const Login = () => {
                             </div>
                         </div>
                     </form>
+                </div>
+            </div>
+            <div className="mx-auto mb-5 mobileLoginFormContainer">
+                <div className="row d-flex justify-content-center align-items-center">
+                    <h6 className="mt-5 display-3 fw-bold 1h-1 text-center">Login</h6>
+                </div>
+                <div className="row mt-4">
+                    <div className="col-12 d-flex justify-content-center align-items-center">
+                        <label htmlFor="mobileUserInput" className="me-2 mobileLabels"><i className="fa-solid fa-user"></i></label>
+                        <input id="mobileUserInput" type="username" className="w-50 mobileInputs" value={usernameInput} onChange={(e) => { setUsernameInput(e.target.value) }} onKeyDown={(e) => { handleEnter(e) }}></input>
+                    </div>
+                </div>
+                <div className="row mt-2">
+                    <div className="col-12 d-flex justify-content-center align-items-center">
+                        <label htmlFor="mobilePassInput" className="me-2 mobileLabels"><i className="fa-solid fa-lock"></i></label>
+                        <input id="mobilePassInput" type="password" className="w-50 mobileInputs" value={passwordInput} onChange={(e) => { setPasswordInput(e.target.value) }} onKeyDown={(e) => { handleEnter(e) }}></input>
+                    </div>
+                </div>
+                <div className="row mt-4">
+                    <div className="col-12 d-flex justify-content-center align-items-center">
+                        <button className="btn btn-light text-dark" onClick={handleClick}>Login</button>
+                    </div>
                 </div>
             </div>
         </div>

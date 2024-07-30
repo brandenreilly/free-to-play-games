@@ -96,6 +96,34 @@ export function CreateAccount() {
                     </form>
                 </div>
             </div>
+            <div className="mx-auto mb-5 mobileLoginFormContainer">
+                <div className="row d-flex justify-content-center align-items-center">
+                    <h6 className="mt-4 display-3 fw-bold 1h-1 text-center">Signup</h6>
+                </div>
+                <div className="row mt-4">
+                    <div className="col-12 d-flex justify-content-center align-items-center">
+                        <label htmlFor="mobileEmailInput" className="me-2 mobileLabels" style={{ fontSize: '18px' }}><i className="fas fa-envelope"></i></label>
+                        <input id="mobileEmailInput" type="email" className="w-50 mobileInputs" placeholder="Email" value={emailInput} onChange={(e) => { setEmailInput(e.target.value) }}></input>
+                    </div>
+                </div>
+                <div className="row mt-2">
+                    <div className="col-12 d-flex justify-content-center align-items-center">
+                        <label htmlFor="mobileUserInput" className="me-2 mobileLabels"><i className="fas fa-user"></i></label>
+                        <input id="mobileUserInput" type="username" className="w-50 mobileInputs" placeholder="Username" value={usernameInput} onChange={(e) => { setUsernameInput(e.target.value) }}></input>
+                    </div>
+                </div>
+                <div className="row mt-2">
+                    <div className="col-12 d-flex justify-content-center align-items-center">
+                        <label htmlFor="mobilePassInput" className="me-2 mobileLabels"><i className="fas fa-lock"></i></label>
+                        <input id="mobilePassInput" type="password" className="w-50 mobileInputs" placeholder="Password" value={passwordInput} onChange={(e) => { setPasswordInput(e.target.value) }}></input>
+                    </div>
+                </div>
+                <div className="row mt-4">
+                    <div className="col-12 d-flex justify-content-center align-items-center">
+                        <button className="btn btn-light text-dark" onClick={sendData}>Create Account</button>
+                    </div>
+                </div>
+            </div>
         </div>
     )
 } 

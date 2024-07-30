@@ -1,3 +1,31 @@
+@media (max-width: 767px) {
+    .loginFormContainer {
+        display: none;
+    }
+}
+
+@media (min-width: 768px) {
+    .mobileLoginFormContainer {
+        display: none;
+    }
+}
+
+.mobileLoginFormContainer {
+    background: rgba(35,37,46, 0.9);
+    border-radius: 25px;
+    margin-top: 70px;
+    width: 275px;
+    height: 305px;
+}
+
+.mobileLabels {
+    font-size: 22px;
+}
+
+.mobileInputs {
+    border-radius: 10px;
+}
+
 .loginFormContainer {
     background: rgba(35, 37, 46, 0.9);
     border-radius: 20%;

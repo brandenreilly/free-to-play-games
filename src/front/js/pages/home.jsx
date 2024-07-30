@@ -6,10 +6,14 @@ import { array } from "prop-types";
 import { Link } from "react-router-dom";
 import HeroImage from "../component/Hero/hero.jsx";
 import hero1Image from "../../img/hero_img_1.png"
+import useNextGames from "../component/CustomHooks/useNextGames.jsx";
 
 export const Home = () => {
 	const { store, actions } = useContext(Context);
 	const [recentGames, setRecentGames] = useState([])
+	const [last4, setLast4] = useState(0)
+	const [next4, setNext4] = useState(4)
+	const [newList, setNewList] = useState([])
 	const hero1 = {
 		title: "Browse The Latest Free-To-Play Games with Free2PlayFinder",
 		desc: "Browse the most up-to-date list of Free-To-Play games, along with the ability to create an account and set your favorite games.",
@@ -29,6 +33,15 @@ export const Home = () => {
 		}
 	}, [])
 
+	useEffect(() => {
+		handleGet4()
+	}, [last4, next4])
+
+	function handleGet4() {
+		let newArr = useNextGames(recentGames, last4, next4)
+		setNewList([...newList, ...newArr])
+	}
+
 	function handleGetRecents() {
 		const url = 'https://free-to-play-games-database.p.rapidapi.com/api/games?sort-by=release-date'
 		const opts = {
@@ -43,6 +56,10 @@ export const Home = () => {
 			.then(data => setRecentGames(data))
 	}
 
+	function nextFour() {
+		setLast4(last4 + 4)
+		setNext4(next4 + 4)
+	}
 
 	return (
 		<>
@@ -57,10 +74,18 @@ export const Home = () => {
 						</div>
 					</div>
 					<div className="row mx-auto d-flex justify-content-center">
-						{recentGames.length !== 0 && recentGames.slice(0, 4).map((data, ind) => {
+						{newList.length !== 0 && newList.map((item, ind) => {
+							return (
+								<div className="col-4" key={ind}>
+									<img className="img-fluid" style={{ height: '100px', width: '100px' }} src={item.thumbnail} />
+									<p>{item.title}</p>
+								</div>
+							)
+						})}
+						{/* {recentGames.length !== 0 && recentGames.slice(0, 4).map((data, ind) => {
 							return (
 								<div className="card-shadow col-xxxl-2 col-xxxxl-2 col-lg-3 col-md-6 col-xs-1 d-flex justify-content-center mx-0 mb-3 p-0 overflow-auto" style={{ position: 'relative' }} key={ind}>
-									<div className="card card-styling h-100" style={{ width: "17rem" }}>
+									<div className="card card-styling h-100" style={{ width: "18rem" }}>
 										<Link to={`/game/${data.id}`} className="card-styling h-100" state={data.id} style={{ textDecoration: 'none' }}>
 											<img src={data.thumbnail} className="card-img-top" alt={data.title} />
 											<div className="card-body text-white">
@@ -75,7 +100,12 @@ export const Home = () => {
 									</div>
 								</div>
 							)
-						})}
+						})} */}
+					</div>
+					<div className="row mx-auto d-flex justify-content-center">
+						<div className="col-12">
+							<button className="btn btn-dark" style={{ border: 'none' }} onClick={() => { nextFour() }}><i className="fas fa-caret-down"></i></button>
+						</div>
 					</div>
 				</div>
 			</div>
