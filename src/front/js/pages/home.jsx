@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Context } from "../store/appContext.js";
 import "../../styles/home.css";
+import "../pages/Display/display.css"
 import { array } from "prop-types";
 import { Link } from "react-router-dom";
 import HeroImage from "../component/Hero/hero.jsx";
@@ -50,6 +51,11 @@ export const Home = () => {
 			</div>
 			<div className="text-center d-flex justify-content-center mt-2 row mx-0">
 				<div className="col-10">
+					<div className="row mx-auto d-flex justify-content-center">
+						<div className="col-6 text-center">
+							<h6 className="display-6 fw-bold text-white 1h-1">Most Recent Releases:</h6>
+						</div>
+					</div>
 					<div className="row mx-auto d-flex justify-content-center">
 						{recentGames.length !== 0 && recentGames.slice(0, 4).map((data, ind) => {
 							return (

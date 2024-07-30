@@ -47,9 +47,6 @@
 .card-styling {
     background-color: rgba(35, 37, 46, 0.9);
     color: white;
-}
-
-.card-styling { 
     transition: box-shadow 0.3s ease; 
 }
 
