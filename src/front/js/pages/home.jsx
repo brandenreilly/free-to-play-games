@@ -11,8 +11,8 @@ import useNextGames from "../component/CustomHooks/useNextGames.jsx";
 export const Home = () => {
 	const { store, actions } = useContext(Context);
 	const [recentGames, setRecentGames] = useState([])
-	const [last4, setLast4] = useState(0)
-	const [next4, setNext4] = useState(4)
+	const [last4, setLast4] = useState(undefined)
+	const [next4, setNext4] = useState(undefined)
 	const [newList, setNewList] = useState([])
 	const hero1 = {
 		title: "Browse The Latest Free-To-Play Games with Free2PlayFinder",
@@ -57,8 +57,14 @@ export const Home = () => {
 	}
 
 	function nextFour() {
-		setLast4(last4 + 4)
-		setNext4(next4 + 4)
+		if (last4 === undefined && next4 === undefined) {
+			setLast4(0)
+			setNext4(4)
+		}
+		else {
+			setLast4(last4 + 4)
+			setNext4(next4 + 4)
+		}
 	}
 
 	return (
@@ -78,7 +84,7 @@ export const Home = () => {
 							return (
 								<div className="col-4" key={ind}>
 									<img className="img-fluid" style={{ height: '100px', width: '100px' }} src={item.thumbnail} />
-									<p>{item.title}</p>
+									<p className="text-white">{item.title}</p>
 								</div>
 							)
 						})}

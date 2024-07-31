@@ -1,14 +1,16 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect, StrictMode } from "react";
 import { Context } from "../../store/appContext";
 import "../Display/display.css"
 import { Link, useNavigate } from "react-router-dom";
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
+import useNextGames from "../../component/CustomHooks/useNextGames.jsx";
 
 export const Display = () => {
     const { store, actions } = useContext(Context)
     const [games, setGames] = useState([])
-    const [searchResults, setSearchResults] = useState([])
+    const [newGames, setNewGames] = useState([])
+    const [isLoading, setIsLoading] = useState(true)
     const [inputValue, setInputValue] = useState('')
     const [type, setType] = useState(null)
     const [selectValue, setSelectValue] = useState("placeholder")
@@ -18,6 +20,8 @@ export const Display = () => {
     const [selectGenreValue, setSelectGenreValue] = useState("placeholder")
     const [genreValue, setGenreValue] = useState("All")
     const [show, setShow] = useState(false);
+    const [last16, setLast16] = useState(0)
+    const [next16, setNext16] = useState(16)
     const navigate = useNavigate()
     const genre = ["All", "mmorpg", "shooter", "strategy", "moba", "racing", "sports", "social", "sandbox", "open-world", "survival", "pvp", "pve", "pixel", "voxel", "zombie", "turn-based", "first-person", "third-Person", "top-down", "tank", "space", "sailing", "side-scroller", "superhero", "permadeath", "card", "battle-royale", "mmo", "mmofps", "mmotps", "3d", "2d", "anime", "fantasy", "sci-fi", "fighting", "action-rpg", "action", "military", "martial-arts", "flight", "low-spec", "tower-defense", "horror", "mmorts"]
 
@@ -25,8 +29,22 @@ export const Display = () => {
         if (games.length != 0) return;
         else if (games.length == 0) {
             handleGetGames()
+            setIsLoading(false)
         }
     }, [])
+
+    useEffect(() => {
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, [isLoading]);
+
+    useEffect(() => {
+        handleFirst16()
+    }, [games])
+
+    /*     useEffect(() => {
+            handleGetNextPage()
+        }, [last16, next16]) */
 
     useEffect(() => {
         if (games.length >= 0) handleSearch(type)
@@ -174,9 +192,37 @@ export const Display = () => {
         } else if (type == clicked) {
             setType(null)
         }
-
-
     }
+
+    function handleNextPage() {
+        if (last16 === undefined && next16 === undefined) {
+            setLast16(0)
+            setNext16(16)
+        } else {
+            setLast16(last16 + 16)
+            setNext16(next16 + 16)
+        }
+    }
+
+    function handleFirst16() {
+        if (last16 === 0 && next16 === 16) {
+            let newArr = useNextGames(games, 0, 16)
+            setNewGames(newArr)
+        }
+    }
+
+    function handleGetNextPage() {
+        let nextPage = useNextGames(games, last16, next16)
+        setNewGames([...newGames, ...nextPage])
+    }
+
+    function handleScroll() {
+        if (window.innerHeight + document.documentElement.scrollTop !== document.documentElement.scrollHeight) {
+            return;
+        }
+        handleGetNextPage()
+        console.log('breaks')
+    };
 
     return (
         <div className="">
@@ -184,24 +230,24 @@ export const Display = () => {
                 <div className="col-9" style={{ color: 'white' }}>
                     <div className="row">
                         <div className="col-lg-4 col-md-6 text-center align-items-center">
-                            <button type="button searchbutton" style={{ color: 'white' }} className={`btn btn-dark button-rounded ${type == 'title' && 'active'}`} onClick={() => handleType('title')}>Title</button>
+                        <button type="button searchbutton" style={{ color: 'white' }} className={`btn btn-dark button-rounded ${type == 'title' && 'active'}`} onClick={() => handleType('title')}>Title</button>
                         </div>
                         <div className="col-lg-4 col-md-6 text-center align-items-center">
                             <button type="button searchbutton" style={{ color: 'white' }} className={`btn btn-dark button-rounded ${type == 'dev' && 'active'}`} onClick={() => handleType('dev')}>Developer</button>
-                        </div>
+                            </div>
                         <div className="col-lg-4 col-md-6 text-center align-items-center">
-                            <button type="button searchbutton" style={{ color: 'white' }} className={`btn btn-dark button-rounded ${type == 'pub' && 'active'}`} onClick={() => handleType('pub')}>Publisher</button>
+                        <button type="button searchbutton" style={{ color: 'white' }} className={`btn btn-dark button-rounded ${type == 'pub' && 'active'}`} onClick={() => handleType('pub')}>Publisher</button>
                         </div>
-                    </div>
-                </div>
-            </div>
-            {type !== null && <form className='mt-3'>
-                <div className='row mx-auto'>
+                        </div>
+                        </div>
+                        </div>
+                        {type !== null && <form className='mt-3'>
+                        <div className='row mx-auto'>
                     <div className='col-6 d-flex justify-content-center mx-auto'>
-                        <input type='text' aria-label='Search' placeholder="Search..." value={inputValue} onChange={(e) => { setInputValue(e.target.value) }} className=' w-25 form-control' />
+                    <input type='text' aria-label='Search' placeholder="Search..." value={inputValue} onChange={(e) => { setInputValue(e.target.value) }} className=' w-25 form-control' />
                     </div>
-                </div>
-            </form>} */}
+                    </div>
+                    </form>} */}
             <div className="row mx-auto mt-3 d-flex justify-content-center">
                 <div className="col-9">
                     <div className="row">
@@ -274,8 +320,7 @@ export const Display = () => {
             <div className="row mx-auto mt-3 d-flex justify-content-center">
                 <div className="col-10">
                     <div className="row mx-auto d-flex justify-content-center">
-                        {games.length > 0 ? games.map((data, ind) => {
-                            sessionStorage.setItem('arrValue', ind + 1)
+                        {newGames.length > 0 ? newGames.map((data, ind) => {
                             return (
                                 <div className="card-shadow col-xxxl-2 col-xxxxl-2 col-lg-3 col-md-6 col-xs-1 d-flex justify-content-center mx-0 mb-3 p-0 overflow-auto" style={{ position: 'relative' }} key={ind}>
                                     <div className="card card-styling h-100" style={{ width: "17rem" }}>
@@ -300,6 +345,7 @@ export const Display = () => {
                         }) : <div className="spinner-border text-light" role="status">
                             <span className="visually-hidden">Loading...</span>
                         </div>}
+                        <button className="btn btn-light text-dark border-0" onClick={handleNextPage}>Get games</button>
                     </div>
                     <div className="row mx-auto d-flex justify-content-center">
                     </div>

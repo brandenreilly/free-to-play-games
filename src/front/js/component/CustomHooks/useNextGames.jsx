@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 export const useNextGames = (arr, min, max) => {
     let newArr = []
-    arr.length !== 0 && arr.slice(min, max).map((data, ind) => {
+    arr.slice(min, max).map((data, ind) => {
         newArr.push(data)
     })
     return newArr
