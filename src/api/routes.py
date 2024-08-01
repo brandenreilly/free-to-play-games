@@ -27,15 +27,9 @@ def handle_hello():
 
 @api.route('/users', methods=['GET'])
 def handle_users():
-    my_list = []
     users = User.query.all()
-    for item in users:
-        new_item = item.serialize()
-        my_list.append(new_item)        
-    dump = json.dumps(my_list)
-    load = json.loads(dump)
-    
-    return jsonify(users = load), 200
+    list_users = list(map(lambda x: x.serialize(), users))
+    return jsonify(list_users), 200
 
 @api.route('/login', methods=['POST'])
 def handle_login():

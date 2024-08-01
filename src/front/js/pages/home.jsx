@@ -33,15 +33,6 @@ export const Home = () => {
 		}
 	}, [])
 
-	useEffect(() => {
-		handleGet4()
-	}, [last4, next4])
-
-	function handleGet4() {
-		let newArr = useNextGames(recentGames, last4, next4)
-		setNewList([...newList, ...newArr])
-	}
-
 	function handleGetRecents() {
 		const url = 'https://free-to-play-games-database.p.rapidapi.com/api/games?sort-by=release-date'
 		const opts = {
@@ -54,17 +45,6 @@ export const Home = () => {
 		fetch(url, opts)
 			.then(resp => resp.json())
 			.then(data => setRecentGames(data))
-	}
-
-	function nextFour() {
-		if (last4 === undefined && next4 === undefined) {
-			setLast4(0)
-			setNext4(4)
-		}
-		else {
-			setLast4(last4 + 4)
-			setNext4(next4 + 4)
-		}
 	}
 
 	return (
@@ -88,7 +68,7 @@ export const Home = () => {
 								</div>
 							)
 						})}
-						{/* {recentGames.length !== 0 && recentGames.slice(0, 4).map((data, ind) => {
+						{recentGames.length !== 0 && recentGames.slice(0, 4).map((data, ind) => {
 							return (
 								<div className="card-shadow col-xxxl-2 col-xxxxl-2 col-lg-3 col-md-6 col-xs-1 d-flex justify-content-center mx-0 mb-3 p-0 overflow-auto" style={{ position: 'relative' }} key={ind}>
 									<div className="card card-styling h-100" style={{ width: "18rem" }}>
@@ -106,12 +86,9 @@ export const Home = () => {
 									</div>
 								</div>
 							)
-						})} */}
+						})}
 					</div>
 					<div className="row mx-auto d-flex justify-content-center">
-						<div className="col-12">
-							<button className="btn btn-dark" style={{ border: 'none' }} onClick={() => { nextFour() }}><i className="fas fa-caret-down"></i></button>
-						</div>
 					</div>
 				</div>
 			</div>

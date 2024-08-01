@@ -42,9 +42,9 @@ export const Display = () => {
         handleFirst16()
     }, [games])
 
-    /*     useEffect(() => {
-            handleGetNextPage()
-        }, [last16, next16]) */
+    useEffect(() => {
+        handleGetNextPage()
+    }, [last16, next16])
 
     useEffect(() => {
         if (games.length >= 0) handleSearch(type)
@@ -103,7 +103,7 @@ export const Display = () => {
             }
         }
         else if (inputValue.length === 0) {
-            handleGetGames()
+            setNewGames(games)
         }
     }
 
@@ -209,19 +209,39 @@ export const Display = () => {
             let newArr = useNextGames(games, 0, 16)
             setNewGames(newArr)
         }
+        if (selectValue !== 'placeholder') {
+            setLast16(0)
+            setNext16(16)
+            let newArr = useNextGames(games, 0, 16)
+            setNewGames(newArr)
+        }
+        if (selectGenreValue !== 'placeholder') {
+            setLast16(0)
+            setNext16(16)
+            let newArr = useNextGames(games, 0, 16)
+            setNewGames(newArr)
+        }
+        if (selectPlatValue !== 'placeholder') {
+            setLast16(0)
+            setNext16(16)
+            let newArr = useNextGames(games, 0, 16)
+            setNewGames(newArr)
+        }
     }
 
     function handleGetNextPage() {
         let nextPage = useNextGames(games, last16, next16)
         setNewGames([...newGames, ...nextPage])
+        setIsLoading(false)
     }
 
     function handleScroll() {
         if (window.innerHeight + document.documentElement.scrollTop !== document.documentElement.scrollHeight) {
             return;
         }
-        handleGetNextPage()
-        console.log('breaks')
+        setIsLoading(true)
+        setLast16(last16 + 16)
+        setNext16(next16 + 16)
     };
 
     return (
@@ -345,9 +365,11 @@ export const Display = () => {
                         }) : <div className="spinner-border text-light" role="status">
                             <span className="visually-hidden">Loading...</span>
                         </div>}
-                        <button className="btn btn-light text-dark border-0" onClick={handleNextPage}>Get games</button>
                     </div>
                     <div className="row mx-auto d-flex justify-content-center">
+                        {isLoading && <div className="spinner-border text-light" role="status">
+                            <span className="visually-hidden">Loading...</span>
+                        </div>}
                     </div>
                 </div>
             </div>
