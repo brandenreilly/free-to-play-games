@@ -5,6 +5,9 @@ import { Link, useNavigate } from "react-router-dom";
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import useNextGames from "../../component/CustomHooks/useNextGames.jsx";
+import Games from "../../component/CustomHooks/Games.js";
+import Pagination from "../../component/CustomHooks/usePagination.js";
+import useNextPageScroll from "../../component/CustomHooks/useNextPageScroll.js";
 
 export const Display = () => {
     const { store, actions } = useContext(Context)
@@ -22,6 +25,8 @@ export const Display = () => {
     const [show, setShow] = useState(false);
     const [last16, setLast16] = useState(0)
     const [next16, setNext16] = useState(16)
+    const [currentPage, setCurrentPage] = useState(1)
+    const [gamesPerPage] = useState(16)
     const navigate = useNavigate()
     const genre = ["All", "mmorpg", "shooter", "strategy", "moba", "racing", "sports", "social", "sandbox", "open-world", "survival", "pvp", "pve", "pixel", "voxel", "zombie", "turn-based", "first-person", "third-Person", "top-down", "tank", "space", "sailing", "side-scroller", "superhero", "permadeath", "card", "battle-royale", "mmo", "mmofps", "mmotps", "3d", "2d", "anime", "fantasy", "sci-fi", "fighting", "action-rpg", "action", "military", "martial-arts", "flight", "low-spec", "tower-defense", "horror", "mmorts"]
 
@@ -212,37 +217,51 @@ export const Display = () => {
         if (selectValue !== 'placeholder') {
             setLast16(0)
             setNext16(16)
-            let newArr = useNextGames(games, 0, 16)
-            setNewGames(newArr)
         }
         if (selectGenreValue !== 'placeholder') {
             setLast16(0)
             setNext16(16)
-            let newArr = useNextGames(games, 0, 16)
-            setNewGames(newArr)
         }
         if (selectPlatValue !== 'placeholder') {
             setLast16(0)
             setNext16(16)
-            let newArr = useNextGames(games, 0, 16)
-            setNewGames(newArr)
         }
     }
 
     function handleGetNextPage() {
+        setIsLoading(true)
         let nextPage = useNextGames(games, last16, next16)
-        setNewGames([...newGames, ...nextPage])
-        setIsLoading(false)
+        if (last16 === 0 && next16 === 16) {
+            setNewGames(nextPage)
+            setIsLoading(false)
+        } else {
+            setNewGames([...newGames, ...nextPage])
+            setIsLoading(false)
+        }
     }
 
-    function handleScroll() {
+    async function handleScroll() {
         if (window.innerHeight + document.documentElement.scrollTop !== document.documentElement.scrollHeight) {
             return;
         }
         setIsLoading(true)
         setLast16(last16 + 16)
         setNext16(next16 + 16)
+        setIsLoading(false)
+        /* setIsLoading(true);
+        useNextPageScroll(gamesPerPage, games.length, currentPage, scrollPaginate)
+        setIsLoading(false); */
     };
+
+    const indexOfLastGame = currentPage * gamesPerPage
+    const indexOfFirstGame = indexOfLastGame - gamesPerPage
+    const currentGames = games.slice(indexOfFirstGame, indexOfLastGame)
+
+    function scrollPaginate(number) {
+        setCurrentPage(number)
+    }
+
+    const paginate = (pageNumber) => setCurrentPage(pageNumber)
 
     return (
         <div className="">
@@ -366,6 +385,9 @@ export const Display = () => {
                             <span className="visually-hidden">Loading...</span>
                         </div>}
                     </div>
+                    {/* <div className="row mx-auto d-flex justify-content-center">
+                        <Pagination gamesPerPage={gamesPerPage} paginate={paginate} totalGames={games.length} />
+                    </div> */}
                     <div className="row mx-auto d-flex justify-content-center">
                         {isLoading && <div className="spinner-border text-light" role="status">
                             <span className="visually-hidden">Loading...</span>
