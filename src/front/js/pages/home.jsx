@@ -7,29 +7,30 @@ import { Link } from "react-router-dom";
 import HeroImage from "../component/Hero/hero.jsx";
 import hero1Image from "../../img/hero_img_1.png"
 import useNextGames from "../component/CustomHooks/useNextGames.jsx";
+import { useCookies } from 'react-cookie'
+import { jwtDecode } from 'jwt-decode'
 
 export const Home = () => {
 	const { store, actions } = useContext(Context);
 	const [recentGames, setRecentGames] = useState([])
-	const [last4, setLast4] = useState(undefined)
-	const [next4, setNext4] = useState(undefined)
 	const [newList, setNewList] = useState([])
-	const hero1 = {
+	const [cookies, setCookie, removeCookie] = useCookies()
+	const [hero1] = useState({
 		title: "Browse The Latest Free-To-Play Games with Free2PlayFinder",
 		desc: "Browse the most up-to-date list of Free-To-Play games, along with the ability to create an account and set your favorite games.",
 		btn1Desc: 'Games List',
 		btn1Nav: '/games',
-		btn2Desc: 'Signup',
-		btn2Nav: '/signup',
+		btn2Desc: { loggedIn: 'Profile', notLoggedIn: 'Signup' },
+		btn2Nav: { loggedIn: '/profile', notLoggedIn: '/signup' },
 		src: hero1Image
-	}
+	})
 
 	useEffect(() => {
 		if (recentGames.length === 0) {
 			handleGetRecents()
 		}
 		else {
-
+			return;
 		}
 	}, [])
 

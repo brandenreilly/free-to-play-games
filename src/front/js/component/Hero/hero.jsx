@@ -1,8 +1,33 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Context } from "../../store/appContext";
 
 export const HeroImage = ({ data }) => {
+    const { store, actions } = useContext(Context)
+    const [btn2Desc, setBtn2Desc] = useState('')
+    const [btn2Nav, setBtn2Nav] = useState('')
+    const user = store.user
     const navigate = useNavigate()
+
+    useEffect(() => {
+        if (user) {
+            setBtn2Desc(data.btn2Desc.loggedIn)
+            setBtn2Nav(data.btn2Nav.loggedIn)
+        } else {
+            setBtn2Desc(data.btn2Desc.notLoggedIn)
+            setBtn2Nav(data.btn2Nav.notLoggedIn)
+        }
+    }, [])
+
+    useEffect(() => {
+        if (user) {
+            setBtn2Desc(data.btn2Desc.loggedIn)
+            setBtn2Nav(data.btn2Nav.loggedIn)
+        } else {
+            setBtn2Desc(data.btn2Desc.notLoggedIn)
+            setBtn2Nav(data.btn2Nav.notLoggedIn)
+        }
+    }, [user])
 
     function handleNav(loc) {
         navigate(loc)
@@ -30,7 +55,7 @@ export const HeroImage = ({ data }) => {
                     <p className="lead">{data.desc}</p>
                     <div className="d-grid gap-2 d-md-flex justify-content-md-start justify-content-lg-center">
                         <button className="btn btn-primary btn-lg px-4 me-md-2" onClick={() => { handleNav(data.btn1Nav) }}>{data.btn1Desc}</button>
-                        <button className="btn btn-outline-secondary btn-lg px-4" onClick={() => { handleNav(data.btn2Nav) }}>{data.btn2Desc}</button>
+                        <button className="btn btn-outline-secondary btn-lg px-4" onClick={() => { handleNav(btn2Nav) }}>{btn2Desc}</button>
                     </div>
                 </div>
             </div>

@@ -6,6 +6,7 @@ from api.models import db, User, Favorites
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from flask_jwt_extended import create_access_token
+from flask_jwt_extended import create_refresh_token
 from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
 import json
@@ -40,12 +41,20 @@ def handle_login():
     if find_user:
         if password == find_user.password:
             logged_in = find_user.serialize()
-            access_token = create_access_token(identity=username)
-            return jsonify(access_token=access_token, id=find_user.id), 200
+            access_token = create_access_token(identity=username, fresh=True)
+            refresh_token = create_refresh_token(identity=username)
+            return jsonify(access_token=access_token, refresh_token=refresh_token, id=find_user.id), 200
         else:
             return jsonify({"msg": "Incorrect login information."}), 401
     else:
         return jsonify({"msg": "No account with matching username found, try creating an account."}), 401
+    
+@api.route('/refresh', methods=['POST'])
+@jwt_required(refresh=True)
+def handle_refresh():
+    identity = get_jwt_identity()
+    access_token = create_access_token(identity=identity, fresh=False)
+    return jsonify(access_token=access_token)
 
 @api.route('/create', methods=['POST'])
 def handle_create_user():

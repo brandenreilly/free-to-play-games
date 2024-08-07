@@ -1,4 +1,8 @@
+import { jwtDecode } from 'jwt-decode';
+import { useCookies } from 'react-cookie';
+
 const getState = ({ getStore, getActions, setStore }) => {
+	const [cookies, setCookie, removeCookie] = useCookies()
 	return {
 		store: {
 			message: null,
@@ -142,7 +146,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 								return resp.json()
 							}
 							else {
-								return setStore({ error: 'Invalid Token' })
+								setStore({ error: 'Invalid Token' })
+								sessionStorage.removeItem('token')
 							}
 						})
 						.then(data => setStore({ user: data }))
@@ -172,8 +177,37 @@ const getState = ({ getStore, getActions, setStore }) => {
 					})
 					.then(data => {
 						setStore({ user: data })
-						sessionStorage.setItem("token", data.access_token)
+						sessionStorage.setItem("token", data.access_token);
+						if (cookies.token) {
+							if (cookies.rfshTok) {
+								removeCookie('token')
+								removeCookie('rfshTok')
+								setCookie('token', data.access_token)
+								setCookie('rfshTok', data.refresh_token)
+							}
+							else {
+								removeCookie('token');
+								setCookie('token', data.access_token)
+								setCookie('rfshTok', data.refresh_token)
+							}
+						}
+						else {
+							setCookie('token', data.access_token)
+						}
 					})
+			},
+
+			checkIfTokenExp: () => {
+				let token = sessionStorage.getItem('token')
+				if (!token) return true;
+				try {
+					const decodedToken = jwtDecode(token);
+					const currentTime = Date.now() / 1000;
+					return decodedToken.exp < currentTime;
+				} catch (error) {
+					console.error('Error decoding token:', error);
+					return true;
+				}
 			},
 
 			handleLogOut: () => {

@@ -235,7 +235,7 @@ export function ProfilePage() {
                                                 <Link to={`/game/${item.game_id}`} state={item.game_id} style={{ textDecoration: 'none' }}>
                                                     <button className="btn btn-secondary text-light">Click for more details.</button>
                                                 </Link>
-                                                <button class="btn btn-secondary" onClick={() => handleConfirmShow(item.id, index)}>
+                                                <button className="btn btn-secondary" onClick={() => handleConfirmShow(item.id, index)}>
                                                     <i className="fas fa-trash text-danger fa-lg"></i>
                                                 </button>
                                             </div>

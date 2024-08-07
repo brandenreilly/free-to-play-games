@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState, useRef } from "react";
 import "../SingleDisplay/singledisplay.css"
 import { Context } from "../../../store/appContext";
 import { useLocation } from "react-router-dom";
+import ScrollToTop from "../../../component/scrollToTop";
 
 export const SingleDisplay = () => {
     let location = useLocation()
@@ -23,6 +24,7 @@ export const SingleDisplay = () => {
     useEffect(() => {
         if (!activeImage) return;
         dialogRef.current.showModal();
+        window.scrollTo(0, 0)
         dialogRef.current.addEventListener('close', closeModal);
         document.body.style.overflow = 'hidden';
         document.body.addEventListener('keydown', handleOnKeyDown);
@@ -249,7 +251,7 @@ export const SingleDisplay = () => {
             </div>
             <dialog className="p-0 position-relative overflow-visible" ref={dialogRef}>
                 <div className="position-relative dialogContainer" style={{ zIndex: '0' }}>
-                    {(activeImage && <img className="w-100 h-100" src={activeImage.image} />)}
+                    {(activeImage && <img className="" style={{ width: "100%", height: "95%" }} src={activeImage.image} />)}
                     <button className="shadow p-0 d-flex justify-content-center align-items-center position-absolute" onClick={handleLeft} style={{ top: '50%', left: '-0px', zIndex: 'auto', border: 'none', height: '28px', width: '28px', backgroundColor: 'transparent' }}><i className="fa-solid fa-chevron-left fa-xl text-light"></i></button>
                     <button className="shadow p-0 d-flex justify-content-center align-items-center position-absolute" onClick={handleRight} style={{ top: '50%', right: '-0px', zIndex: 'auto', border: 'none', height: '28px', width: '28px', backgroundColor: 'transparent' }}><i className="fa-solid fa-chevron-right fa-xl text-light"></i></button>
                 </div>
