@@ -1,122 +1,90 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import '../SearchPage/SearchPage.css'
 import { SearchOptions } from './SearchOptions.jsx'
-
+import { useCookies } from 'react-cookie'
+import { Context } from '../../store/appContext.js'
 
 export const SearchPage = () => {
-    const [gamesArr, setGamesArr] = useState([])
+    const images = require.context('../../../img/pfp-avatars', false);
+    const imageList = images.keys().map(image => images(image));
+    const { store, actions } = useContext(Context)
     const [searchResults, setSearchResults] = useState([])
-    const [inputValue, setInputValue] = useState('')
-    const [type, setType] = useState(null)
-    const [loading, setLoading] = useState(true)
+    const [searchInput, setSearchInput] = useState('')
+    const [loading, setLoading] = useState(false)
+    const [cookies, setCookie, removeCookie] = useCookies()
+    const token = cookies.token
+    const backend = process.env.BACKEND_URL
     const navigate = useNavigate()
+    const controller = new AbortController();
+    const signal = controller.signal
 
     useEffect(() => {
-        if (gamesArr.length <= 0) handleFetch()
-    }, [])
-
-    useEffect(() => {
-        if (gamesArr.length >= 0) handleSearch(type)
-    }, [inputValue])
-
-    const handleFetch = () => {
-        const url = 'https://free-to-play-games-database.p.rapidapi.com/api/games';
-        const opts = {
-            method: 'GET',
-            headers: {
-                'x-rapidapi-key': '0be2c6ee08msh09f5b606ef00be5p12323cjsn62bad5bcc967',
-                'x-rapidapi-host': 'free-to-play-games-database.p.rapidapi.com'
-            }
-        };
-        fetch(url, opts)
-            .then(resp => resp.json())
-            .then(data => setGamesArr(data))
-    }
-
-    const handleSearch = (type) => {
-        setLoading(true)
-
-        if (inputValue.length > 2) {
-            let newArr = []
-            if (type === 'title') {
-                gamesArr.map((data, ind) => {
-                    if (data.title.toLowerCase().includes(inputValue.toLowerCase())) {
-                        newArr.push(data)
-                        setSearchResults(newArr)
-                    }
-                })
-            } else if (type === 'dev') {
-                gamesArr.map((data, ind) => {
-                    if (data.developer.toLowerCase().includes(inputValue.toLowerCase())) {
-                        newArr.push(data)
-                        setSearchResults(newArr)
-                    }
-                })
-            } else if (type === 'pub') {
-                gamesArr.map((data, ind) => {
-                    if (data.publisher.toLowerCase().includes(inputValue.toLowerCase())) {
-                        newArr.push(data)
-                        setSearchResults(newArr)
-                    }
-                })
-            }
-        }
-        else if (inputValue.length === 0) {
+        if (searchInput !== '') {
+            handleFetch()
+        } else if (searchInput === '') {
             setSearchResults([])
         }
+        return () => controller.abort()
+    }, [searchInput])
+
+    function handleFetch() {
+        setLoading(true)
+        const url = 'api/findusers'
+        const opts = {
+            method: 'POST',
+            signal: signal,
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(searchInput)
+        }
+        fetch(backend + url, opts)
+            .then(resp => resp.json())
+            .then(data => {
+                setSearchResults(data.results)
+                setLoading(false)
+            })
     }
-
-
-
     return (
         <>
             <div className='row mt-5 justify-content-center'>
                 <div className='col-6 text-center'>
-                    <h6 className='text-light'>Search By:</h6>
+                    <h6 className='text-light display-6 1h-1 fw-bold'>Search Users:</h6>
                 </div>
             </div>
             <div className="row mt-2 justify-content-center">
-                <div className="col d-flex justify-content-center" style={{ color: 'white' }}>
-                    <button type="button searchbutton" style={{ color: 'white' }} className={`btn btn-outline-light button-rounded ${location.pathname == '/search/title' && 'active'}`} onClick={() => { navigate("/search/title"); setType('title') }}>Title</button>
-                    <button type="button searchbutton" style={{ color: 'white' }} className={`btn btn-outline-light button-rounded ${location.pathname == '/search/dev' && 'active'}`} onClick={() => { navigate("/search/dev"); setType('dev') }}>Developer</button>
-                    <button type="button searchbutton" style={{ color: 'white' }} className={`btn btn-outline-light button-rounded ${location.pathname == '/search/pub' && 'active'}`} onClick={() => { navigate("/search/pub"); setType('pub') }}>Publisher</button>
+                <div className="col-6 d-flex justify-content-center">
+                    <label htmlFor="searchInput" className="sr-only">Username</label>
+                    <input autoComplete='off' type="text" id="searchInput" className=" w-25 b-0" onChange={(e) => { setSearchInput(e.target.value) }} />
                 </div>
             </div>
-            {type !== null && <form className='mt-3'>
-                <div className='row mx-auto'>
-                    <div className='col-6 d-flex justify-content-center mx-auto'>
-                        <input type='text' aria-label='Search' value={inputValue} onChange={(e) => setInputValue(e.target.value)} className=' w-25 form-control' />
-                    </div>
-                </div>
-                <div className='row mx-auto'>
-                    <div className='col-6 d-flex justify-content-center mx-auto'>
-                        <button className='btn btn-success'>Search</button>
-                    </div>
-                </div>
-            </form>}
-            <div className='row mt-5 d-flex justify-content-center mx-auto'>
-                <div className='col-10 mx-auto'>
-                    <div className="row mx-auto d-flex justify-content-center">
-                        {searchResults.length > 0 && searchResults.map((data, ind) => {
-                            return (<div className="card-shadow col-lg-3 col-md-6 col-xs-1 d-flex justify-content-center mx-0 mb-3 p-0 overflow-auto" key={ind}>
-                                <Link to={`/game/${data.id}`} state={data} style={{ textDecoration: 'none' }}>
-                                    <div className="card card-styling h-100" style={{ width: "17rem" }}>
-                                        <img src={data.thumbnail} className="card-img-top" alt={data.title} />
-                                        <div className="card-body">
-                                            <h5 className="card-title">{data.title}</h5>
-                                            <p className="card-text scroll">{data.short_description}</p>
-                                        </div>
-                                        <div className="card-footer d-flex justify-content-between align-items-center">
-                                            <span className="badge rounded-pill bg-secondary text-light m-0">{data.genre}</span>
-                                            <span className="text-light m-0">{(data.platform == 'PC (Windows)') ? <i className="fa-brands fa-windows"></i> : <i className="fa-regular fa-window-maximize"></i>}</span>
-                                        </div>
+            <div className="row mt-2 justify-content-center d-flex text-center">
+                {loading && <h1 className='text-white'>Loading...</h1>}
+                {searchResults.length !== 0 && searchResults.map((data, ind) => {
+                    return (
+                        <div className="col-3" key={ind}>
+                            <div className="card mb-4" style={{ backgroundColor: "rgba(35, 37, 46, 0.9)", maxWidth: '300px', maxheight: '300px' }}>
+                                <div className="card-body text-center text-white">
+                                    <img
+                                        className="rounded-circle h-25 w-25"
+                                        src={data.profile_pic !== null ? imageList[data.profile_pic].default : 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg'}
+                                        alt={data.username}
+                                        style={{ width: "150px" }} />
+                                    <h5 className="mt-1">{data.username}</h5>
+                                    <p className="text-muted overflow-auto">{data.bio !== null ? data.bio : 'This User has not added a Bio yet.'}</p>
+                                </div>
+                                <div className="card-footer">
+                                    <div className="d-flex justify-content-center mb-2">
+                                        <Link to={`/profile/${data.username}`}>
+                                            <button className='btn btn-outline-light text-light'>Profile</button>
+                                        </Link>
                                     </div>
-                                </Link>
-                            </div>)
-                        })}
-                    </div>
-                </div>
+                                </div>
+                            </div>
+                        </div>)
+                })}
             </div>
         </>
     )

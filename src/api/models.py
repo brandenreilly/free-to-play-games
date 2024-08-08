@@ -10,6 +10,7 @@ class User(db.Model):
     bio = db.Column(db.String(250), unique=False, nullable=True)
     profile_pic = db.Column(db.String(255), unique=False, nullable=True)
     favorites = db.relationship('Favorites', backref='user', lazy=True)
+    #following = db.relationshop('Following', backref='user', lazy=True)
 
     def __repr__(self):
         return f'User {self.email}'
@@ -58,3 +59,10 @@ class Favorites(db.Model):
             "description": self.description,
             "release_date": self.release_date
         }
+
+# Test Endpoint Before Finishing This Model.    
+#class Following(db.Model):
+#    id = db.Column(db.Integer, primary_key=True)
+#    follower_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+#    following_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    

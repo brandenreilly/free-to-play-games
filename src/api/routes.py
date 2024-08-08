@@ -80,13 +80,19 @@ def handle_create_user():
     else: 
         return jsonify({"completed": False, "msg": "There was an error creating your account."}), 500
 
-@api.route('/finduser/<email>', methods=['GET'])
-def handle_get_user(email):
-    find_user = User.query.filter_by(email=email).first()
-    if find_user:
-        send_user = find_user.serialize()
-        return jsonify(id=find_user.id), 200
+@api.route('/findusers', methods=['POST'])
+@jwt_required()
+def handle_get_user():
+    current_user = get_jwt_identity()
+    sent_info = request.json
+    search = "%{}%".format(sent_info)
+    find_results = User.query.filter(User.username.ilike(search)).all()
+    results_serialize = list(map(lambda x: x.serialize(), find_results))
+
+    return jsonify({"results": results_serialize}), 200
     
+
+
 @api.route('/update/password', methods=['PATCH'])
 @jwt_required()
 def handle_update_user():
@@ -183,7 +189,7 @@ def handle_get_user_data():
         user = find_user.serialize()
         get_user_favs = Favorites.query.filter_by(uid=find_user.id).all()
         list_favorites = list(map(lambda x: x.serialize(), get_user_favs))
-        return jsonify({"user": user, "favorites": list_favorites})
+        return jsonify({"user": user, "favorites": list_favorites}), 200
     else:
         return jsonify({"error": "Invalid Token"})
 
@@ -194,3 +200,19 @@ def handle_token():
     get_user = User.query.filter_by(username=current_user).first()
     serialized = get_user.serialize()
     return jsonify(user=serialized), 200
+
+@api.route('/profile/<username>', methods=['GET'])
+@jwt_required()
+def handle_get_profile(username):
+    current_user = get_jwt_identity()
+    if User.query.filter_by(username=current_user):
+        # Getting User's Details and Favorites
+        get_searched_user = User.query.filter_by(username=username).first()
+        get_user_favorites = Favorites.query.filter_by(uid=get_searched_user.id).all()
+        # Serializing User's Details and Favorites
+        list_favorites = list(map(lambda x: x.serialize(), get_user_favorites))
+        serialized = get_searched_user.serialize()
+        # Return the details + favorites with a 200 status code.
+        return jsonify({"user": serialized, "favorites": list_favorites}), 200
+    else: 
+        return jsonify({"msg": "User could not be verified."})
