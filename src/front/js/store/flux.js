@@ -213,6 +213,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 			handleLogOut: () => {
 				setStore({ user: undefined })
 				sessionStorage.removeItem('token')
+				removeCookie('token')
+				removeCookie('rfshTok')
 			},
 
 			getUserData: () => {

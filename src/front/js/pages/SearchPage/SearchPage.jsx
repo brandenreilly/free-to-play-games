@@ -41,11 +41,18 @@ export const SearchPage = () => {
             body: JSON.stringify(searchInput)
         }
         fetch(backend + url, opts)
-            .then(resp => resp.json())
+            .then(resp => {
+                if (resp.ok) {
+                    return resp.json()
+                } else if (resp.status == 422) {
+                    throw new Error('No Authorization Token, Please Login')
+                }
+            })
             .then(data => {
                 setSearchResults(data.results)
                 setLoading(false)
             })
+            .catch(e => alert(e))
     }
     return (
         <>
@@ -71,7 +78,8 @@ export const SearchPage = () => {
                                         className="rounded-circle h-25 w-25"
                                         src={data.profile_pic !== null ? imageList[data.profile_pic].default : 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg'}
                                         alt={data.username}
-                                        style={{ width: "150px" }} />
+                                        style={{ width: "150px" }}
+                                    />
                                     <h5 className="mt-1">{data.username}</h5>
                                     <p className="text-muted overflow-auto">{data.bio !== null ? data.bio : 'This User has not added a Bio yet.'}</p>
                                 </div>
