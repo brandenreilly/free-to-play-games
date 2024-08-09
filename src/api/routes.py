@@ -49,7 +49,7 @@ def handle_login():
     else:
         return jsonify({"msg": "No account with matching username found, try creating an account."}), 401
     
-@api.route('/refresh', methods=['POST'])
+@api.route('/refresh', methods=['GET'])
 @jwt_required(refresh=True)
 def handle_refresh():
     identity = get_jwt_identity()
@@ -189,9 +189,23 @@ def handle_get_user_data():
         user = find_user.serialize()
         get_user_favs = Favorites.query.filter_by(uid=find_user.id).all()
         list_favorites = list(map(lambda x: x.serialize(), get_user_favs))
-        return jsonify({"user": user, "favorites": list_favorites}), 200
+        following = find_user.serialize_followed()
+        followers = find_user.serialize_followers()
+        return jsonify({"user": user, "favorites": list_favorites, "follow_data": {"following": following, "followers": followers}}), 200
     else:
         return jsonify({"error": "Invalid Token"})
+
+@api.route('/getfollow', methods=['GET'])
+@jwt_required()
+def handle_get_follow():
+    current = get_jwt_identity()
+    user = User.query.filter_by(username=current).first()
+    if user:
+        followed_users = user.serialize_followed()
+        followers = user.serialize_followers()
+        return jsonify({'followed': followed_users, 'followers': followers}), 200
+    else:
+        return jsonify({'msg': 'Error Getting Info'}), 400
 
 @api.route('/token', methods=['GET'])
 @jwt_required()

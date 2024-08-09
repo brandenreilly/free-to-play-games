@@ -1,6 +1,13 @@
 from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
 
 db = SQLAlchemy()
+
+following = db.Table('following',
+    db.Column('follower_id', db.Integer, db.ForeignKey('user.id'), primary_key=True),
+    db.Column('followed_id', db.Integer, db.ForeignKey('user.id'), primary_key=True),
+    db.Column('timestamp', db.DateTime, default=datetime.utcnow)
+)
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -10,8 +17,30 @@ class User(db.Model):
     bio = db.Column(db.String(250), unique=False, nullable=True)
     profile_pic = db.Column(db.String(255), unique=False, nullable=True)
     favorites = db.relationship('Favorites', backref='user', lazy=True)
-    #following = db.relationshop('Following', backref='user', lazy=True)
 
+    # Defining a Many-To-Many relationship
+    followed = db.relationship(
+        'User',
+        secondary=following,
+        primaryjoin=id==following.c.follower_id,
+        secondaryjoin=id==following.c.followed_id,
+        backref=db.backref('followers', lazy='dynamic'),
+        lazy='dynamic'
+    )
+    
+    def follow(self, user):
+        if not self.is_following(user):
+            self.followed.append(user)
+            db.session.commit()
+
+    def unfollow(self, user):
+        if self.is_following(user):
+            self.followed.remove(user)
+            db.session.commit()
+
+    def is_following(self, user):
+        return self.followed.filter(following.c.followed_id == user.id).count() > 0
+    
     def __repr__(self):
         return f'User {self.email}'
     
@@ -29,6 +58,12 @@ class User(db.Model):
             "profile_pic": self.profile_pic,
             # do not serialize the password, its a security breach
         }
+    def serialize_followed(self):
+        return [user.serialize() for user in self.followed]
+    def serialize_followers(self):
+        return [user.serialize() for user in self.followers]
+
+
     
 class Favorites(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -59,10 +94,3 @@ class Favorites(db.Model):
             "description": self.description,
             "release_date": self.release_date
         }
-
-# Test Endpoint Before Finishing This Model.    
-#class Following(db.Model):
-#    id = db.Column(db.Integer, primary_key=True)
-#    follower_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-#    following_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    

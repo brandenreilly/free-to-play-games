@@ -148,12 +148,37 @@ const getState = ({ getStore, getActions, setStore }) => {
 							else {
 								setStore({ error: 'Invalid Token' })
 								sessionStorage.removeItem('token')
+								throw new Error('Invalid Token, Please Refresh')
 							}
 						})
 						.then(data => setStore({ user: data }))
+						.catch(e => console.log(e))
 				}
 				else { }
 			},
+
+			handleRefreshToken: () => {
+				let token = sessionStorage.getItem('token')
+				let rfshTok = cookies.rfshTok
+				if (!token) {
+					if (rfshTok) {
+						fetch(process.env.BACKEND_URL + 'api/refresh', { methods: 'GET', headers: { 'Authorization': `Bearer ${rfshTok}` } })
+							.then(resp => {
+								if (resp.ok) {
+									return resp.json()
+								} else {
+									throw new Error('Refresh Token Expired, Please Re-Login')
+								}
+							})
+							.then(data => {
+								sessionStorage.setItem('token', data.access_token)
+								setCookie('token', data.access_token)
+							})
+							.catch(e => console.log(e))
+					}
+				}
+			},
+
 			handleLogin: (usernameInput, passwordInput) => {
 				const opts = {
 					method: 'POST',
@@ -172,7 +197,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 							return resp.json()
 						}
 						else {
-							setStore({ error: 'Username or Password is incorrect.' })
+							throw new Error('Username or Password Incorrect')
 						}
 					})
 					.then(data => {
@@ -193,8 +218,10 @@ const getState = ({ getStore, getActions, setStore }) => {
 						}
 						else {
 							setCookie('token', data.access_token)
+							setCookie('rfshTok', data.refresh_token)
 						}
 					})
+					.catch(e => alert(e))
 			},
 
 			checkIfTokenExp: () => {

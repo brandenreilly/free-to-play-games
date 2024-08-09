@@ -29,6 +29,7 @@ const injectContext = PassedComponent => {
 			 * store, instead use actions, like this:
 			 **/
 			state.actions.handleGetUserFromToken();  // <---- calling this function from the flux.js actions
+			state.actions.handleRefreshToken()
 			if (state.store.games.length == 0) state.actions.handleGetGames()
 		}, []);
 

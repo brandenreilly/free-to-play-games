@@ -6,3 +6,12 @@
     border-bottom: 1px solid rgba(255,255,255,0.4);
     border-radius: 5px;
   }
+
+  .searchInp {
+    border: none;
+    border-radius: 25px;
+    caret-color: white;
+  }
+  .searchInp:focus-within {
+    outline: 1px solid gray;
+  }

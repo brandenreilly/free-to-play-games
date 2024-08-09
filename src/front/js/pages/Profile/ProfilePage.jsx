@@ -15,14 +15,28 @@ export function ProfilePage() {
     const [token, setToken] = useState(null)
     const [userData, setUserData] = useState(undefined)
     const [userFavs, setUserFavs] = useState([])
+    const [userFollower, setUserFollower] = useState(null)
+    const [userFollowing, setUserFollowing] = useState(null)
     const [show, setShow] = useState(false);
     const [confirmShow, setConfirmShow] = useState(false)
     const [radioGroup, setRadioGroup] = useState(null)
     const [respMsg, setRespMsg] = useState(null)
     const [TBD, setTBD] = useState(null)
+    const [newShow, setNewShow] = useState(false)
+    const [searchInput, setSearchInput] = useState('')
     const navigate = useNavigate()
+    const controller = new AbortController()
+    const signal = controller.signal
     const backend = process.env.BACKEND_URL
     const err = store.error
+    const follower_count = userFollower ? `${userFollower.length} followers` : ''
+    const following_count = userFollowing ? `${userFollowing.length} following` : ''
+
+
+
+    useEffect(() => {
+        setUserFollower(handleFollowerSearch(searchInput))
+    }, [searchInput])
 
     useEffect(() => {
         if (err === 'Invalid Token') {
@@ -49,6 +63,9 @@ export function ProfilePage() {
     const handleShow = () => setShow(true);
     const handleClose = () => setShow(false);
 
+    const handleNewShow = () => setNewShow(true);
+    const handleNewClose = () => setNewShow(false)
+
     const handleConfirmClose = () => setConfirmShow(false)
     const handleConfirmShow = (id, index) => { setTBD({ id: id, ind: index }); setConfirmShow(true) }
 
@@ -69,7 +86,9 @@ export function ProfilePage() {
             .then(resp => resp.json())
             .then(data => {
                 setUserData(data.user);
-                setUserFavs(data.favorites)
+                setUserFavs(data.favorites);
+                setUserFollower(data.follow_data.followers);
+                setUserFollowing(data.follow_data.following)
             })
     }
 
@@ -172,21 +191,62 @@ export function ProfilePage() {
         }
     }
 
+    function handleFollowerSearch(filter) {
+        if (userFollower) {
+            let newArr = userFollower.filter((item) => {
+                if (filter === '') {
+                    setUserFollower(oldArr)
+                }
+                else if (item.username.includes(filter)) {
+                    return item
+                }
+            })
+            return newArr
+        }
+    }
+
+
     return (
         <>
             <div className="container py-4 w-100">
                 <div className="row d-flex justify-content-center">
                     <div className="col-1"></div>
                     <div className="col-10">
-                        <div className="row">
+                        <div className="row mb-5">
                             <div className="col-4 d-flex justify-content-center align-items-center" style={{ height: '250px', width: '250px' }}>
                                 <img className="rounded-circle h-75 w-75" src={imageList.length != 0 && userData != undefined ? userData ? userData.profile_pic ? imageList[userData.profile_pic].default : 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' : 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' : 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg'} />
                             </div>
-                            <div className="col-6 text-left mt-5">
-                                <h2 className="text-light">{userData != undefined ? userData.username : 'Loading...'}</h2>
-                                <p className="text-light mt-4">{userData != undefined ? userData.bio != null ? userData.bio : <button className="btn btn-light text-dark" onClick={handleShow} style={{ textDecoration: 'none' }} href="/update/bio">Click to update Bio</button> : 'Loading...'}</p>
+                            <div className="col-8 text-left mt-5">
+                                <div className="row mb-3">
+                                    <div className="col-12">
+                                        <h2 className="text-light">{userData != undefined ? userData.username : 'Loading...'}</h2>
+                                    </div>
+                                    <div className="col-12">
+                                        <div className="row">
+                                            <div className="col-3">
+                                                <a className="text-muted" style={{ textDecoration: 'none' }} onClick={handleNewShow}>
+                                                    <strong>{follower_count}</strong>
+                                                </a>
+                                            </div>
+                                            <div className="col-3">
+                                                <p className="text-muted"><strong>{following_count}</strong></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="col-12">
+                                        <p className="text-light mt-4 mb-2">{userData != undefined ? userData.bio != null ? userData.bio : <button className="btn btn-light text-dark" onClick={handleShow} style={{ textDecoration: 'none' }} href="/update/bio">Click to update Bio</button> : 'Loading...'}</p>
+                                    </div>
+                                </div>
                             </div>
-                            <div className="col-2 text-left mt-5">
+                            <div className="col-2 p-0 mt-5">
+                                <div className="row">
+                                    <div className="col-6 text-left p-0">
+                                    </div>
+                                    <div className="col-6 text-left p-0">
+                                    </div>
+                                </div>
+                            </div>
+                            {/* <div className="col-2 text-left mt-5">
                                 <div className="row mt-2 socialIcon">
                                     <div className="col-2 d-flex align-items-center">
                                         <i className="fab fa-discord fa-lg text-white"></i>
@@ -211,7 +271,7 @@ export function ProfilePage() {
                                         <p className="text-white m-0">martxl</p>
                                     </div>
                                 </div>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                     <div className="col-1"><button className="border-0 bg-transparent" onClick={handleShow}><i className="fas fa-user-edit fa-lg text-white"></i></button></div>
@@ -247,6 +307,38 @@ export function ProfilePage() {
                     </div>
                 </div>
             </div>
+
+            <Modal
+                className="updateInfo text-white bg-dark"
+                show={newShow}
+                onHide={handleNewClose}
+                size="md"
+                aria-labelledby="contained-modal-title-vcenter"
+                centered
+            >
+                <Modal.Header closeButton closeVariant="white">
+                    <Modal.Title>Followers</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <div className="row d-flex justify-content-center mb-3">
+                        <input className="bg-dark w-75 searchInp text-white" placeholder="Search" type="text" value={searchInput} onChange={(e) => { setSearchInput(e.target.value) }} />
+                    </div>
+                    {userFollower && userFollower.map((data, ind) => {
+                        return (
+                            <div className="row w-100 mx-5 my-2 d-flex align-items-center" key={ind} style={{ maxHeight: '75px' }}>
+                                <div className="col-2">
+                                    <img className="img-fluid rounded-circle" alt={data.username} src={imageList[data.profile_pic]?.default ? imageList[data.profile_pic]?.default : 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg'} />
+                                </div>
+                                <div className="col-6 ps-0 text-left">
+                                    <h6 className="text-white">{data.username}</h6>
+                                </div>
+                            </div>
+
+                        )
+                    })}
+                </Modal.Body>
+            </Modal>
+
             <Modal
                 className="updateInfo text-white"
                 show={confirmShow}

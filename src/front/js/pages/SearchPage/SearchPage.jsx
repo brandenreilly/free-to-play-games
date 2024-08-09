@@ -24,6 +24,7 @@ export const SearchPage = () => {
             handleFetch()
         } else if (searchInput === '') {
             setSearchResults([])
+            setLoading(false)
         }
         return () => controller.abort()
     }, [searchInput])
