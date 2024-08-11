@@ -115,7 +115,8 @@ def handle_update_bio():
     if find_user:
         find_user.bio = bio
         db.session.commit()
-        return jsonify({"msg": "Updated Successfully"}), 201
+        updated = find_user.serialize_bio()
+        return jsonify({"msg": "Updated Successfully", "updated": updated}), 201
 
 @api.route('/update/avatar', methods=['PATCH'])
 @jwt_required()
@@ -127,8 +128,25 @@ def handle_update_pic():
     if find_user:
         find_user.profile_pic = pic_id
         db.session.commit()
-        return jsonify({"msg": "Updated Successfully"}), 201
+        updated = find_user.serialize_profile_pic()
+        return jsonify({"msg": "Updated Successfully", "updated": updated}), 201
     
+@api.route('/update/bio/profile', methods=['PATCH'])
+@jwt_required()
+def handle_update_both():
+    current_user = get_jwt_identity()
+    sent_info = request.json
+    bio = sent_info['bio']
+    pic_id = sent_info['profile_pic']
+    get_user = User.query.filter_by(username=current_user).first()
+    if get_user:
+        get_user.bio = bio
+        get_user.profile_pic = pic_id
+        db.session.commit()
+        updated_bio = get_user.serialize_bio()
+        updated_pic = get_user.serialize_profile_pic()
+        return jsonify({"msg": "Updated Successfully", "updated": {"bio": updated_bio, "pic": updated_pic}}), 201
+
 @api.route('/addfavorite', methods=['POST'])
 @jwt_required()
 def handle_add_favorite():

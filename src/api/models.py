@@ -58,6 +58,14 @@ class User(db.Model):
             "profile_pic": self.profile_pic,
             # do not serialize the password, its a security breach
         }
+    def serialize_bio(self):
+        return {
+            "bio": self.bio
+        }
+    def serialize_profile_pic(self):
+        return {
+            "profile_pic": self.profile_pic
+        }
     def serialize_followed(self):
         return [user.serialize() for user in self.followed]
     def serialize_followers(self):

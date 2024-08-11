@@ -7,79 +7,52 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import { Link, useNavigate } from "react-router-dom";
 
-// REFACTOR THE USESTATES TO NOT USE 15 DIFFERENT STATES.
+// Continue Refactoring.
 // Try to reduce this component down to smaller mini-components.
 
 export function ProfilePage() {
     const images = require.context('../../../img/pfp-avatars', false);
     const imageList = images.keys().map(image => images(image));
-    const { store, actions } = useContext(Context)
+    const { store } = useContext(Context)
     const [textAreaInput, setTextAreaInput] = useState('')
-    const [token, setToken] = useState(null)
-    const [userData, setUserData] = useState(undefined)
-    const [userFavs, setUserFavs] = useState([])
-    const [userFollower, setUserFollower] = useState(null)
+    const [userObj, setUserObj] = useState(null)
     const [searchFollower, setSearchFollower] = useState(null)
-    const [userFollowing, setUserFollowing] = useState(null)
     const [show, setShow] = useState(false);
     const [confirmShow, setConfirmShow] = useState(false)
     const [radioGroup, setRadioGroup] = useState(null)
-    const [respMsg, setRespMsg] = useState(null)
     const [TBD, setTBD] = useState(null)
     const [newShow, setNewShow] = useState(false)
     const [searchInput, setSearchInput] = useState('')
     const navigate = useNavigate()
-    const controller = new AbortController()
-    const signal = controller.signal
+    const token = sessionStorage.getItem('token')
     const backend = process.env.BACKEND_URL
     const err = store.error
-    const follower_count = userFollower ? `${userFollower.length} followers` : ''
-    const following_count = userFollowing ? `${userFollowing.length} following` : ''
-
-
+    if (userObj?.followers) var follower_count = `${userObj.followers.length} followers`
+    if (userObj?.following) var following_count = `${userObj.following.length} following`
 
     useEffect(() => {
-        handleFollowerSearch(searchInput)
-    }, [searchInput])
-
+        if (!userObj) {
+            getUserData()
+        }
+    }, [])
     useEffect(() => {
         if (err === 'Invalid Token') {
             navigate('/')
         }
     }, [err])
-
     useEffect(() => {
-        if (token != null) return;
-        else getToken()
-    }, [])
-
-    useEffect(() => {
-        if (respMsg !== null) window.location.reload()
-    }, [respMsg])
-
-    useEffect(() => {
-        if (userData !== undefined) return;
-        else {
-            if (token !== null) getUserData()
-        }
-    }, [token])
+        handleFollowerSearch(searchInput)
+    }, [searchInput])
 
     const handleShow = () => setShow(true);
     const handleClose = () => setShow(false);
-
+    const handleConfirmShow = (id, index) => { setTBD({ id: id, ind: index }); setConfirmShow(true) }
+    const handleConfirmClose = () => setConfirmShow(false)
     const handleNewShow = () => setNewShow(true);
     const handleNewClose = () => {
         setNewShow(false)
         setSearchFollower(null)
         setSearchInput('')
-    }
-
-    const handleConfirmClose = () => setConfirmShow(false)
-    const handleConfirmShow = (id, index) => { setTBD({ id: id, ind: index }); setConfirmShow(true) }
-
-    function getToken() {
-        let token = sessionStorage.getItem('token')
-        setToken(token)
     }
 
     function getUserData() {
@@ -93,10 +66,12 @@ export function ProfilePage() {
         fetch(backend + url, opts)
             .then(resp => resp.json())
             .then(data => {
-                setUserData(data.user);
-                setUserFavs(data.favorites);
-                setUserFollower(data.follow_data.followers);
-                setUserFollowing(data.follow_data.following)
+                setUserObj({
+                    data: data.user,
+                    favorites: data.favorites,
+                    followers: data.follow_data.followers,
+                    following: data.follow_data.following
+                })
             })
     }
 
@@ -113,7 +88,10 @@ export function ProfilePage() {
             }
             fetch(backend + url, opts)
                 .then(resp => resp.json())
-                .then(data => setRespMsg(data))
+                .then(data => {
+                    const newBio = { ...userObj.data, bio: data.updated.bio }
+                    setUserObj({ ...userObj, data: newBio })
+                })
         }
     }
 
@@ -130,35 +108,31 @@ export function ProfilePage() {
             }
             fetch(backend + url, opts)
                 .then(resp => resp.json())
-                .then(data => setRespMsg(data))
+                .then(data => {
+                    const newProfPic = { ...userObj.data, profile_pic: data.updated.profile_pic }
+                    setUserObj({ ...userObj, data: newProfPic })
+                })
         }
     }
 
-    function handleAllUpdates() {
-        const url1 = 'api/update/avatar'
-        const url2 = 'api/update/bio'
-        const opts1 = {
+    const updateUserProfile = async () => {
+        const url = 'api/update/bio/profile'
+        const opts = {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify({ "profile_pic": radioGroup })
+            body: JSON.stringify({ "profile_pic": radioGroup, "bio": textAreaInput })
         }
-        const opts2 = {
-            method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify({ "bio": textAreaInput })
+        try {
+            const resp = await fetch(backend + url, opts);
+            const data = await resp.json();
+            const newInfo = { ...userObj.data, profile_pic: data.updated.pic.profile_pic, bio: data.updated.bio.bio };
+            setUserObj({ ...userObj, data: newInfo });
+        } catch (error) {
+            console.error('Error updating the profile', error)
         }
-        fetch(backend + url1, opts1)
-            .then(
-                fetch(backend + url2, opts2)
-                    .then(resp => resp.json())
-                    .then(data => setRespMsg(data.msg))
-            )
     }
 
     function handleFunctions() {
@@ -169,7 +143,7 @@ export function ProfilePage() {
             sendUpdateBio()
         }
         else if (radioGroup !== null && textAreaInput !== '') {
-            handleAllUpdates();
+            updateUserProfile();
         }
 
     }
@@ -187,8 +161,8 @@ export function ProfilePage() {
                 .then(resp => resp.json())
                 .then(data => {
                     if (data?.msg === 'Deleted Successfully') {
-                        let newArr = userFavs.filter((item, ind) => { if (ind != TBD.ind) { return item } })
-                        setUserFavs(newArr)
+                        let newArr = userObj.favorites.filter((item, ind) => { if (ind != TBD.ind) { return item } })
+                        setUserObj({ ...userObj, favorites: newArr })
                         handleConfirmClose()
                         setTBD(null)
                     }
@@ -200,24 +174,29 @@ export function ProfilePage() {
     }
 
     function handleFollowerSearch(filter) {
-        if (userFollower) {
-            setSearchFollower(userFollower.filter((item) => {
+        if (userObj?.followers) {
+            setSearchFollower(userObj.followers.filter((item) => {
                 if (item.username.includes(filter)) {
                     return item
                 }
             }))
-            /*             let newArr = userFollower.filter((item) => {
-                            if (filter === '') {
-                                setUserFollower([])
-                            }
-                            else if (item.username.includes(filter)) {
-                                return item
-                            }
-                        })
-                        return newArr */
         }
     }
 
+    if (!userObj) {
+        return (
+            <div className="row d-flex justify-content-center align-items-center">
+                <div className="col-6 text-end">
+                    <h1 className="text-light 1h-1">Loading...</h1>
+                </div>
+                <div className="col-6 text-start">
+                    <div class="spinner-border text-light" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            </div>
+        )
+    }
 
     return (
         <>
@@ -227,27 +206,32 @@ export function ProfilePage() {
                     <div className="col-10">
                         <div className="row mb-5">
                             <div className="col-4 d-flex justify-content-center align-items-center" style={{ height: '250px', width: '250px' }}>
-                                <img className="rounded-circle h-75 w-75" src={imageList.length != 0 && userData != undefined ? userData ? userData.profile_pic ? imageList[userData.profile_pic].default : 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' : 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' : 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg'} />
+                                <img className="rounded-circle h-75 w-75" src={imageList.length != 0 && userObj != null ? userObj ? userObj.data.profile_pic ? imageList[userObj.data.profile_pic].default : 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' : 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg' : 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg'} />
                             </div>
                             <div className="col-8 text-left mt-5">
                                 <div className="row mb-3">
-                                    <div className="col-12">
-                                        <h2 className="text-light">{userData != undefined ? userData.username : 'Loading...'}</h2>
+                                    <div className="col-8">
+                                        <h2 className="text-light">{userObj != null ? userObj.data.username : 'Loading...'}</h2>
                                     </div>
-                                    <div className="col-12">
+                                    <div className="col-4">
+                                        <button className="border-0 bg-transparent" onClick={handleShow}>
+                                            <i className="fas fa-cog fa-lg text-white"></i>
+                                        </button>
+                                    </div>
+                                    <div className="col-8">
                                         <div className="row">
-                                            <div className="col-3">
+                                            <div className="col-4">
                                                 <a className="text-muted" style={{ textDecoration: 'none' }} onClick={handleNewShow}>
-                                                    <strong>{follower_count}</strong>
+                                                    <strong style={{ cursor: 'pointer' }}>{follower_count}</strong>
                                                 </a>
                                             </div>
-                                            <div className="col-3">
+                                            <div className="col-4">
                                                 <p className="text-muted"><strong>{following_count}</strong></p>
                                             </div>
                                         </div>
                                     </div>
                                     <div className="col-12">
-                                        <p className="text-light mt-4 mb-2">{userData != undefined ? userData.bio != null ? userData.bio : <button className="btn btn-light text-dark" onClick={handleShow} style={{ textDecoration: 'none' }} href="/update/bio">Click to update Bio</button> : 'Loading...'}</p>
+                                        <p className="text-light mt-4 mb-2">{userObj != null ? userObj.data.bio != null ? userObj.data.bio : <button className="btn btn-light text-dark" onClick={handleShow} style={{ textDecoration: 'none' }} href="/update/bio">Click to update Bio</button> : 'Loading...'}</p>
                                     </div>
                                 </div>
                             </div>
@@ -259,43 +243,16 @@ export function ProfilePage() {
                                     </div>
                                 </div>
                             </div>
-                            {/* <div className="col-2 text-left mt-5">
-                                <div className="row mt-2 socialIcon">
-                                    <div className="col-2 d-flex align-items-center">
-                                        <i className="fab fa-discord fa-lg text-white"></i>
-                                    </div>
-                                    <div className="col-10 d-flex align-items-center">
-                                        <p className="text-white m-0">martxl</p>
-                                    </div>
-                                </div>
-                                <div className="row mt-3 socialIcon">
-                                    <div className="col-2 d-flex align-items-center">
-                                        <i className="fab fa-steam fa-lg text-white"></i>
-                                    </div>
-                                    <div className="col-10 d-flex align-items-center">
-                                        <p className="text-white m-0">martxl</p>
-                                    </div>
-                                </div>
-                                <div className="row mt-3 socialIcon d-flex justify-content-center align-items-center">
-                                    <div className="col-2 d-flex align-items-center">
-                                        <i className="fab fa-battle-net fa-lg text-white"></i>
-                                    </div>
-                                    <div className="col-10 d-flex align-items-center">
-                                        <p className="text-white m-0">martxl</p>
-                                    </div>
-                                </div>
-                            </div> */}
                         </div>
                     </div>
-                    <div className="col-1"><button className="border-0 bg-transparent" onClick={handleShow}><i className="fas fa-user-edit fa-lg text-white"></i></button></div>
                 </div>
                 <div className="row d-flex justify-content-center">
                     <div className="col-12">
                         <div className="row d-flex justify-content-center text-center">
-                            <h6 className="text-white mx-auto">{userData !== undefined ? userData.username : 'Loading...'}'s Favorites</h6>
+                            <h6 className="text-white mx-auto">{userObj !== null ? userObj.data.username : 'Loading...'}'s Favorites</h6>
                         </div>
                         <div className="row d-flex justify-content-start">
-                            {userFavs.length !== 0 && userFavs.map((item, index) => {
+                            {userObj?.favorites.length !== 0 && userObj?.favorites.map((item, index) => {
                                 return (
                                     <div className="mt-3 col-xl-3 col-lg-4 col-md-6 col-sm-12 d-flex justify-content-center my-2" key={index}>
                                         <div className="card card-styling h-100" style={{ width: "18rem", backgroundColor: 'rgba(35, 37, 46, 0.9)' }}>
@@ -336,7 +293,7 @@ export function ProfilePage() {
                     <div className="row d-flex justify-content-center mb-3">
                         <input className="bg-dark w-75 searchInp text-white" placeholder="Search" type="text" value={searchInput} onChange={(e) => { setSearchInput(e.target.value) }} />
                     </div>
-                    {searchFollower === null && userFollower ? userFollower.map((data, ind) => {
+                    {searchFollower === null && userObj?.followers ? userObj?.followers.map((data, ind) => {
                         return (
                             <div className="row w-100 mx-5 my-2 d-flex align-items-center" key={ind} style={{ maxHeight: '75px' }}>
                                 <div className="col-2">
@@ -347,7 +304,7 @@ export function ProfilePage() {
                                 </div>
                             </div>
                         )
-                    }) : searchFollower !== null && searchFollower.map((data, ind) => {
+                    }) : searchFollower.map((data, ind) => {
                         return (
                             <div className="row w-100 mx-5 my-2 d-flex align-items-center" key={ind} style={{ maxHeight: '75px' }}>
                                 <div className="col-2">

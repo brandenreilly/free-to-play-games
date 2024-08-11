@@ -17,7 +17,6 @@ import injectContext from "./store/appContext";
 
 import { Navbar } from "./component/Navbar/navbar.js";
 import { ProfilePage } from "./pages/Profile/ProfilePage.jsx";
-import PhotoDisplay from "./pages/Profile/imageTest.jsx";
 import OtherProfile from "./pages/Profile/otherProfile.jsx";
 
 const PrivateRoutes = () => {
@@ -58,7 +57,6 @@ const Layout = () => {
                         <Route element={<SingleDisplay />} path="/game/:id" />
                         <Route element={<SearchPage />} path="/search/" />
                         <Route element={<CreateAccount />} path="/signup" />
-                        <Route element={<PhotoDisplay />} path="/photodisplay" />
                         <Route element={<h1>Not found!</h1>} />
                         <Route element={<PrivateRoutes />}>
                             <Route path='/profile' element={<ProfilePage />} />
