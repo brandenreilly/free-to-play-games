@@ -7,6 +7,9 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import { Link, useNavigate } from "react-router-dom";
 
+// REFACTOR THE USESTATES TO NOT USE 15 DIFFERENT STATES.
+// Try to reduce this component down to smaller mini-components.
+
 export function ProfilePage() {
     const images = require.context('../../../img/pfp-avatars', false);
     const imageList = images.keys().map(image => images(image));
@@ -16,6 +19,7 @@ export function ProfilePage() {
     const [userData, setUserData] = useState(undefined)
     const [userFavs, setUserFavs] = useState([])
     const [userFollower, setUserFollower] = useState(null)
+    const [searchFollower, setSearchFollower] = useState(null)
     const [userFollowing, setUserFollowing] = useState(null)
     const [show, setShow] = useState(false);
     const [confirmShow, setConfirmShow] = useState(false)
@@ -35,7 +39,7 @@ export function ProfilePage() {
 
 
     useEffect(() => {
-        setUserFollower(handleFollowerSearch(searchInput))
+        handleFollowerSearch(searchInput)
     }, [searchInput])
 
     useEffect(() => {
@@ -64,7 +68,11 @@ export function ProfilePage() {
     const handleClose = () => setShow(false);
 
     const handleNewShow = () => setNewShow(true);
-    const handleNewClose = () => setNewShow(false)
+    const handleNewClose = () => {
+        setNewShow(false)
+        setSearchFollower(null)
+        setSearchInput('')
+    }
 
     const handleConfirmClose = () => setConfirmShow(false)
     const handleConfirmShow = (id, index) => { setTBD({ id: id, ind: index }); setConfirmShow(true) }
@@ -193,15 +201,20 @@ export function ProfilePage() {
 
     function handleFollowerSearch(filter) {
         if (userFollower) {
-            let newArr = userFollower.filter((item) => {
-                if (filter === '') {
-                    setUserFollower(oldArr)
-                }
-                else if (item.username.includes(filter)) {
+            setSearchFollower(userFollower.filter((item) => {
+                if (item.username.includes(filter)) {
                     return item
                 }
-            })
-            return newArr
+            }))
+            /*             let newArr = userFollower.filter((item) => {
+                            if (filter === '') {
+                                setUserFollower([])
+                            }
+                            else if (item.username.includes(filter)) {
+                                return item
+                            }
+                        })
+                        return newArr */
         }
     }
 
@@ -323,7 +336,7 @@ export function ProfilePage() {
                     <div className="row d-flex justify-content-center mb-3">
                         <input className="bg-dark w-75 searchInp text-white" placeholder="Search" type="text" value={searchInput} onChange={(e) => { setSearchInput(e.target.value) }} />
                     </div>
-                    {userFollower && userFollower.map((data, ind) => {
+                    {searchFollower === null && userFollower ? userFollower.map((data, ind) => {
                         return (
                             <div className="row w-100 mx-5 my-2 d-flex align-items-center" key={ind} style={{ maxHeight: '75px' }}>
                                 <div className="col-2">
@@ -333,7 +346,17 @@ export function ProfilePage() {
                                     <h6 className="text-white">{data.username}</h6>
                                 </div>
                             </div>
-
+                        )
+                    }) : searchFollower !== null && searchFollower.map((data, ind) => {
+                        return (
+                            <div className="row w-100 mx-5 my-2 d-flex align-items-center" key={ind} style={{ maxHeight: '75px' }}>
+                                <div className="col-2">
+                                    <img className="img-fluid rounded-circle" alt={data.username} src={imageList[data.profile_pic]?.default ? imageList[data.profile_pic]?.default : 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg'} />
+                                </div>
+                                <div className="col-6 ps-0 text-left">
+                                    <h6 className="text-white">{data.username}</h6>
+                                </div>
+                            </div>
                         )
                     })}
                 </Modal.Body>
