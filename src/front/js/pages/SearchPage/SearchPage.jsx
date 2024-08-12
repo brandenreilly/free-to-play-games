@@ -53,7 +53,7 @@ export const SearchPage = () => {
                 setSearchResults(data.results)
                 setLoading(false)
             })
-            .catch(e => alert(e))
+            .catch(e => console.error(e))
     }
     return (
         <>
@@ -86,6 +86,9 @@ export const SearchPage = () => {
                                 </div>
                                 <div className="card-footer">
                                     <div className="d-flex justify-content-center mb-2">
+                                        <Link to={`/profile/${data.username}`}>
+                                            <button className='btn btn-outline-light text-light'>Follow</button>
+                                        </Link>
                                         <Link to={`/profile/${data.username}`}>
                                             <button className='btn btn-outline-light text-light'>Profile</button>
                                         </Link>

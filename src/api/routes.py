@@ -237,14 +237,39 @@ def handle_token():
 @jwt_required()
 def handle_get_profile(username):
     current_user = get_jwt_identity()
-    if User.query.filter_by(username=current_user):
-        # Getting User's Details and Favorites
+    if User.query.filter_by(username=current_user).first():
+        # Getting User's Details, Favorites, Following, and Followers
         get_searched_user = User.query.filter_by(username=username).first()
         get_user_favorites = Favorites.query.filter_by(uid=get_searched_user.id).all()
-        # Serializing User's Details and Favorites
+        # Serializing User's Info
         list_favorites = list(map(lambda x: x.serialize(), get_user_favorites))
         serialized = get_searched_user.serialize()
+        following = get_searched_user.serialize_followed()
+        followers = get_searched_user.serialize_followers()
         # Return the details + favorites with a 200 status code.
-        return jsonify({"user": serialized, "favorites": list_favorites}), 200
+        return jsonify({"user": serialized, "favorites": list_favorites, "follow_data": {"following": following, "followers": followers}}), 200
     else: 
         return jsonify({"msg": "User could not be verified."})
+
+@api.route('/follow/<username>', methods=['GET'])
+@jwt_required()
+def handle_follow_user(username):
+    current_user = get_jwt_identity()
+    logged_in = User.query.filter_by(username=current_user).first()
+    user_to_follow = User.query.filter_by(username=username).first()
+    if logged_in:
+        logged_in.follow(user_to_follow)
+        new_follow_list = logged_in.serialize_followed()
+        new_followers_list = user_to_follow.serialize_followers()
+        return jsonify({"msg": "Followed", "logged_in_new_following": new_follow_list, "just_followed": new_followers_list}), 200
+    
+@api.route('/unfollow/<username>', methods=['GET'])
+@jwt_required()
+def handle_unfollow_user(username):
+    current_user = get_jwt_identity()
+    logged_in = User.query.filter_by(username=current_user).first()
+    user_to_unfollow = User.query.filter_by(username=username).first()
+    if logged_in:
+        logged_in.unfollow(user_to_unfollow)
+        new_followers_list = user_to_unfollow.serialize_followers()
+        return jsonify({"msg": "Unfollowed", "just_unfollowed": new_followers_list}), 200
