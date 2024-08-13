@@ -55,15 +55,17 @@ export default function OtherProfile() {
 
     function handleCheckFollowing() {
         if (userObj) {
-            userObj?.followers.filter((item) => {
-                if (item.username === store.user.user.username) {
-                    console.log('Following')
-                    setIsFollowing(true)
-                } else {
-                    console.log('Not Following')
-                    setIsFollowing(false)
-                }
-            })
+            if (userObj?.followers.length !== 0) {
+                userObj?.followers.filter((item) => {
+                    if (item.username === store.user.user.username) {
+                        console.log('Following')
+                        setIsFollowing(true)
+                    } else {
+                        console.log('Not Following')
+                        setIsFollowing(false)
+                    }
+                })
+            }
         }
     }
 

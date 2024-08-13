@@ -72,36 +72,38 @@ export default function FollowersModal({ show, onHide, followers, title }) {
                 <div className="row d-flex justify-content-center mb-3">
                     <input className="bg-dark w-75 searchInp text-white" placeholder="Search" type="text" value={searchInput} onChange={(e) => { setSearchInput(e.target.value) }} />
                 </div>
-                {searchFollowers === null && followers ? followers.map((data, ind) => {
-                    return (
-                        <div className="row w-100 mx-5 my-2 d-flex align-items-center" key={ind} style={{ maxHeight: '75px' }}>
-                            <div className="col-2">
-                                <img className="img-fluid rounded-circle" alt={data.username} src={imageList[data.profile_pic]?.default ? imageList[data.profile_pic]?.default : 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg'} />
+                <div className="" style={{ maxHeight: '350px', overflowY: 'auto', overflowX: 'hidden' }}>
+                    {searchFollowers === null && followers ? followers.map((data, ind) => {
+                        return (
+                            <div className="row w-100 mx-5 my-2 d-flex align-items-center" key={ind} style={{ maxHeight: '75px' }}>
+                                <div className="col-2">
+                                    <img className="img-fluid rounded-circle" alt={data.username} src={imageList[data.profile_pic]?.default ? imageList[data.profile_pic]?.default : 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg'} />
+                                </div>
+                                <div className="col-6 ps-0 text-left">
+                                    <a href={`/profile/${data.username}`} style={{ textDecoration: 'none' }}>
+                                        <h6 className="text-white">{data.username}</h6>
+                                    </a>
+                                </div>
+                                <div className="col-2">
+                                    {/* Make a working unfollow button */}
+                                </div>
                             </div>
-                            <div className="col-6 ps-0 text-left">
-                                <a href={`/profile/${data.username}`} style={{ textDecoration: 'none' }}>
-                                    <h6 className="text-white">{data.username}</h6>
-                                </a>
+                        )
+                    }) : searchFollowers.map((data, ind) => {
+                        return (
+                            <div className="row w-100 mx-5 my-2 d-flex align-items-center" key={ind} style={{ maxHeight: '75px' }}>
+                                <div className="col-2">
+                                    <img className="img-fluid rounded-circle" alt={data.username} src={imageList[data.profile_pic]?.default ? imageList[data.profile_pic]?.default : 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg'} />
+                                </div>
+                                <div className="col-6 ps-0 text-left">
+                                    <a href={`/profile/${data.username}`} style={{ textDecoration: 'none' }}>
+                                        <h6 className="text-white">{data.username}</h6>
+                                    </a>
+                                </div>
                             </div>
-                            <div className="col-2">
-                                {/* Make a working unfollow button */}
-                            </div>
-                        </div>
-                    )
-                }) : searchFollowers.map((data, ind) => {
-                    return (
-                        <div className="row w-100 mx-5 my-2 d-flex align-items-center" key={ind} style={{ maxHeight: '75px' }}>
-                            <div className="col-2">
-                                <img className="img-fluid rounded-circle" alt={data.username} src={imageList[data.profile_pic]?.default ? imageList[data.profile_pic]?.default : 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg'} />
-                            </div>
-                            <div className="col-6 ps-0 text-left">
-                                <a href={`/profile/${data.username}`} style={{ textDecoration: 'none' }}>
-                                    <h6 className="text-white">{data.username}</h6>
-                                </a>
-                            </div>
-                        </div>
-                    )
-                })}
+                        )
+                    })}
+                </div>
             </Modal.Body>
         </Modal>
     )
