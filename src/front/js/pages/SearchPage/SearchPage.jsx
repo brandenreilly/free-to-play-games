@@ -8,14 +8,12 @@ import { Context } from '../../store/appContext.js'
 export const SearchPage = () => {
     const images = require.context('../../../img/pfp-avatars', false);
     const imageList = images.keys().map(image => images(image));
-    const { store, actions } = useContext(Context)
     const [searchResults, setSearchResults] = useState([])
     const [searchInput, setSearchInput] = useState('')
     const [loading, setLoading] = useState(false)
-    const [cookies, setCookie, removeCookie] = useCookies()
+    const [cookies] = useCookies()
     const token = cookies.token
     const backend = process.env.BACKEND_URL
-    const navigate = useNavigate()
     const controller = new AbortController();
     const signal = controller.signal
 
@@ -65,7 +63,7 @@ export const SearchPage = () => {
             <div className="row mt-2 justify-content-center">
                 <div className="col-6 d-flex justify-content-center">
                     <label htmlFor="searchInput" className="sr-only">Username</label>
-                    <input autoComplete='off' type="text" id="searchInput" className=" w-25 b-0" onChange={(e) => { setSearchInput(e.target.value) }} />
+                    <input autoComplete='off' type="text" id="searchInput" className=" w-25 b-0" onChange={(e) => setSearchInput(e.target.value)} />
                 </div>
             </div>
             <div className="row mt-2 justify-content-center d-flex text-center">
