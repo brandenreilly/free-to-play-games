@@ -23,7 +23,13 @@ export function ProfilePage() {
     const token = sessionStorage.getItem('token')
     const backend = process.env.BACKEND_URL
     const err = store.error
-    if (userObj?.followers) var follower_count = `${userObj.followers.length} followers`
+    if (userObj?.followers) {
+        if (userObj.followers.length === 1) {
+            var follower_count = `${userObj.followers.length} follower`
+        } else {
+            var follower_count = `${userObj.followers.length} followers`
+        }
+    }
     if (userObj?.following) var following_count = `${userObj.following.length} following`
 
     useEffect(() => {

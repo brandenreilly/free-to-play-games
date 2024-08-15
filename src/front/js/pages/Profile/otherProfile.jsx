@@ -13,7 +13,13 @@ export default function OtherProfile() {
     const [newShow, setNewShow] = useState(false)
     const [isFollowing, setIsFollowing] = useState(false)
     const [cookies] = useCookies()
-    if (userObj?.followers) var follower_count = `${userObj.followers.length} followers`
+    if (userObj?.followers) {
+        if (userObj.followers.length === 1) {
+            var follower_count = `${userObj.followers.length} follower`
+        } else {
+            var follower_count = `${userObj.followers.length} followers`
+        }
+    }
     if (userObj?.following) var following_count = `${userObj.following.length} following`
     const token = cookies.token
     const backend = process.env.BACKEND_URL
