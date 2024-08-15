@@ -5,6 +5,8 @@
     padding: 0;
     color: white;
     height: 250px;
+    position: sticky;
+    top: 70px;
 }
 
 .searchInputStyle {

@@ -66,9 +66,6 @@ export default function OtherProfile() {
                     if (item.username === store.user.user.username) {
                         console.log('Following')
                         setIsFollowing(true)
-                    } else {
-                        console.log('Not Following')
-                        setIsFollowing(false)
                     }
                 })
             }

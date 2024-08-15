@@ -22,12 +22,8 @@ export const Display = () => {
     const [platformValue, setPlatformValue] = useState("All")
     const [selectGenreValue, setSelectGenreValue] = useState("placeholder")
     const [genreValue, setGenreValue] = useState("All")
-    const [show, setShow] = useState(false);
     const [last16, setLast16] = useState(0)
     const [next16, setNext16] = useState(16)
-    const [currentPage, setCurrentPage] = useState(1)
-    const [gamesPerPage] = useState(16)
-    const navigate = useNavigate()
     const genre = ["All", "mmorpg", "shooter", "strategy", "moba", "racing", "sports", "social", "sandbox", "open-world", "survival", "pvp", "pve", "pixel", "voxel", "zombie", "turn-based", "first-person", "third-Person", "top-down", "tank", "space", "sailing", "side-scroller", "superhero", "permadeath", "card", "battle-royale", "mmo", "mmofps", "mmotps", "3d", "2d", "anime", "fantasy", "sci-fi", "fighting", "action-rpg", "action", "military", "martial-arts", "flight", "low-spec", "tower-defense", "horror", "mmorts"]
 
     useEffect(() => {       // Happens once on page load.
@@ -66,20 +62,6 @@ export const Display = () => {
     useEffect(() => {     // Happens when the Variable "genreValue" updates.
         handleSortByGenre(selectGenreValue)
     }, [genreValue])
-
-    /* useEffect(() => {
-        document.querySelector('#searchDropdown').addEventListener('click', function (event) {
-            event.preventDefault()
-        });
-        return () => {
-            document.querySelector('#searchDropdown').removeEventListener('click', function (event) {
-                event.preventDefault()
-            })
-        }
-    }, []) */
-
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
 
     const handleSearch = (type) => {
         if (inputValue.length > 1) {
@@ -199,16 +181,6 @@ export const Display = () => {
         }
     }
 
-    function handleNextPage() {
-        if (last16 === undefined && next16 === undefined) {
-            setLast16(0)
-            setNext16(16)
-        } else {
-            setLast16(last16 + 16)
-            setNext16(next16 + 16)
-        }
-    }
-
     function handleFirst16() {
         if (last16 === 0 && next16 === 16) {
             let newArr = useNextGames(games, 0, 16)
@@ -248,45 +220,10 @@ export const Display = () => {
         setLast16(last16 + 16)
         setNext16(next16 + 16)
         setIsLoading(false)
-        /* setIsLoading(true);
-        useNextPageScroll(gamesPerPage, games.length, currentPage, scrollPaginate)
-        setIsLoading(false); */
     };
-
-    const indexOfLastGame = currentPage * gamesPerPage
-    const indexOfFirstGame = indexOfLastGame - gamesPerPage
-    const currentGames = games.slice(indexOfFirstGame, indexOfLastGame)
-
-    function scrollPaginate(number) {
-        setCurrentPage(number)
-    }
-
-    const paginate = (pageNumber) => setCurrentPage(pageNumber)
 
     return (
         <div className="">
-            {/* <div className="row mx-auto mt-3 d-flex justify-content-center">
-                <div className="col-9" style={{ color: 'white' }}>
-                    <div className="row">
-                        <div className="col-lg-4 col-md-6 text-center align-items-center">
-                        <button type="button searchbutton" style={{ color: 'white' }} className={`btn btn-dark button-rounded ${type == 'title' && 'active'}`} onClick={() => handleType('title')}>Title</button>
-                        </div>
-                        <div className="col-lg-4 col-md-6 text-center align-items-center">
-                            <button type="button searchbutton" style={{ color: 'white' }} className={`btn btn-dark button-rounded ${type == 'dev' && 'active'}`} onClick={() => handleType('dev')}>Developer</button>
-                            </div>
-                        <div className="col-lg-4 col-md-6 text-center align-items-center">
-                        <button type="button searchbutton" style={{ color: 'white' }} className={`btn btn-dark button-rounded ${type == 'pub' && 'active'}`} onClick={() => handleType('pub')}>Publisher</button>
-                        </div>
-                        </div>
-                        </div>
-                        </div>
-                        {type !== null && <form className='mt-3'>
-                        <div className='row mx-auto'>
-                    <div className='col-6 d-flex justify-content-center mx-auto'>
-                    <input type='text' aria-label='Search' placeholder="Search..." value={inputValue} onChange={(e) => { setInputValue(e.target.value) }} className=' w-25 form-control' />
-                    </div>
-                    </div>
-                    </form>} */}
             <div className="row mx-auto mt-3 d-flex justify-content-center">
                 <div className="col-9">
                     <div className="row">
@@ -327,7 +264,6 @@ export const Display = () => {
                         <div className="col-lg-3 col-md-6 text-center align-items-center">
                             <button
                                 className="btn btn-dark text-light button-rounded dropdown-toggle"
-                                onClick={handleShow}
                                 data-bs-toggle="dropdown"
                                 aria-expanded="false"
                             >Search...</button>
@@ -385,9 +321,6 @@ export const Display = () => {
                             <span className="visually-hidden">Loading...</span>
                         </div>}
                     </div>
-                    {/* <div className="row mx-auto d-flex justify-content-center">
-                        <Pagination gamesPerPage={gamesPerPage} paginate={paginate} totalGames={games.length} />
-                    </div> */}
                     <div className="row mx-auto d-flex justify-content-center">
                         {isLoading && <div className="spinner-border text-light" role="status">
                             <span className="visually-hidden">Loading...</span>
