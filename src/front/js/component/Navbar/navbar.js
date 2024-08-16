@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "../Navbar/navbar.css";
 import f2pf_img from "../../../img/f2pf_Logo.png"
@@ -6,6 +6,29 @@ import { Context } from "../../store/appContext";
 
 export const Navbar = () => {
 	const { store, actions } = useContext(Context)
+	const [filteredGames, setFilteredGames] = useState(null)
+	const [searchInput, setSearchInput] = useState('')
+	const [expanded, setExpanded] = useState(false)
+
+	useEffect(() => {
+		if (searchInput !== '' && searchInput !== ' ') {
+			handleSearchGames(searchInput)
+			setExpanded(true)
+		} else if (searchInput === '') {
+			setFilteredGames(null)
+			setExpanded(false)
+		}
+	}, [searchInput])
+
+	function handleSearchGames(filter) {
+		if (store.games) {
+			setFilteredGames(store.games.filter((game) => {
+				if (game.title.toLowerCase().includes(filter.toLowerCase())) {
+					return game
+				}
+			}))
+		}
+	}
 
 	return (
 		<nav className="navbar navbar-expand-lg py-1 px-1 fixed-top">
@@ -26,6 +49,15 @@ export const Navbar = () => {
 					<Link to={'/games'} style={{ marginLeft: store.user ? '2%' : 'auto' }}>
 						<button className="btn text-light"><i className="fas fa-book-open me-1"></i>Games</button>
 					</Link>
+					{/* 					<form className="d-flex">
+						<input className="form-control me-2 bg-dark text-white" value={searchInput} onChange={(e) => setSearchInput(e.target.value)} type="search" placeholder="Search" aria-label="Search" />
+					</form>
+					<ul>
+						{filteredGames !== null && filteredGames.map((item) => {
+							return <li key={item.id}>{item.title}</li>
+						})}
+					</ul> */}
+
 					<Link to={'/search'} style={{ marginLeft: '2%' }}>
 						<button className="btn text-light"><i className="fas fa-search me-1"></i>Search</button>
 					</Link>

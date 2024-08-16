@@ -2,12 +2,7 @@ import React, { useContext, useState, useEffect, StrictMode } from "react";
 import { Context } from "../../store/appContext";
 import "../Display/display.css"
 import { Link, useNavigate } from "react-router-dom";
-import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal';
 import useNextGames from "../../component/CustomHooks/useNextGames.jsx";
-import Games from "../../component/CustomHooks/Games.js";
-import Pagination from "../../component/CustomHooks/usePagination.js";
-import useNextPageScroll from "../../component/CustomHooks/useNextPageScroll.js";
 
 export const Display = () => {
     const { store, actions } = useContext(Context)
@@ -310,7 +305,6 @@ export const Display = () => {
                                             <span className="text-light m-0">{(data.platform == 'PC (Windows)') ? <i className="fa-brands fa-lg fa-windows"></i> : <i className="fa-regular fa-lg fa-window-maximize"></i>}</span>
                                             <span className="badge rounded-pill bg-secondary text-light m-0 ms-3">{data.genre}</span>
                                             <div className="ms-auto">
-                                                {/* <button className="text-light m-0 bg-transparent border-0"><i className="far fa-star fa-lg"></i></button> */}
                                                 <button className="text-light m-0 bg-transparent border-0 favBTN" onClick={() => { actions.handleAddToWatch(data) }}><i className="far fa-eye fa-lg"></i></button>
                                             </div>
                                         </div>

@@ -17,7 +17,6 @@ class User(db.Model):
     bio = db.Column(db.String(250), unique=False, nullable=True)
     profile_pic = db.Column(db.String(255), unique=False, nullable=True)
     favorites = db.relationship('Favorites', backref='user', lazy=True)
-
     # Defining a Many-To-Many relationship
     followed = db.relationship(
         'User',
@@ -70,8 +69,6 @@ class User(db.Model):
         return [user.serialize() for user in self.followed]
     def serialize_followers(self):
         return [user.serialize() for user in self.followers]
-
-
     
 class Favorites(db.Model):
     id = db.Column(db.Integer, primary_key=True)
