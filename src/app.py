@@ -3,7 +3,7 @@ This module takes care of starting the API Server, Loading the DB and Adding the
 """
 import os
 from datetime import timedelta
-from flask import Flask, request, jsonify, url_for, send_from_directory
+from flask import Flask, request, jsonify, url_for, send_from_directory, render_template
 from flask_migrate import Migrate
 from flask_swagger import swagger
 from api.utils import APIException, generate_sitemap
@@ -66,6 +66,9 @@ def sitemap():
 
 # any other endpoint will try to serve it like a static file
 
+@app.route('/docs')
+def documentation():
+    return render_template('docs.html')
 
 @app.route('/<path:path>', methods=['GET'])
 def serve_any_other_file(path):
@@ -74,7 +77,6 @@ def serve_any_other_file(path):
     response = send_from_directory(static_file_dir, path)
     response.cache_control.max_age = 0  # avoid cache memory
     return response
-
 
 # this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':
