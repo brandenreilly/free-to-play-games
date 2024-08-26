@@ -22,6 +22,7 @@ static_file_dir = os.path.join(os.path.dirname(
 template_dir = os.path.abspath('./src/templates')
 app = Flask(__name__, template_folder=template_dir)
 app.url_map.strict_slashes = False
+app.config['FLASK_ADMIN_FLUID_LAYOUT'] = True
 app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET")
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=1)
 app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(hours=24)
